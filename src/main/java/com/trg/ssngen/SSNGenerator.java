@@ -4,12 +4,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
-public class SSNGenerator {
-    
-    public String generateSSN(boolean isPermanent, Date date, char gender) {
-        
+public class SSNGenerator {  
+    private char checkmark;
+
+    public String generateSSN(boolean isPermanent, Date date, char gender) {  
         StringBuilder sb = new StringBuilder();
-        Random rnd = new Random();
         
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -58,6 +57,7 @@ public class SSNGenerator {
         String modifiedSSN = removeDelimiter(ssn);
         
         // Remove checkmark from the end of ssn
+       
         
         
         if(Integer.valueOf(modifiedSSN) % 31 == 1) {
@@ -70,7 +70,8 @@ public class SSNGenerator {
     private String removeDelimiter(String ssn) {
         String modifiedSSN = "";
         for(char ch : ssn.toCharArray()) {
-            if(ch != '-' || ch != '+' || ch != 'A') {
+            if(ch != '-' && ch != '+' && ch != 'A') {
+                System.out.println("EHTO TäYTTYY");
                 modifiedSSN += String.valueOf(ch);
             }
         }
@@ -82,7 +83,6 @@ public class SSNGenerator {
         boolean isValidRandomNumber = false;
         boolean isValidAgainstCheckmark = false;
         int lastDigits = 000;
-        char checkmark = 0;
         
         // Remove delimiter from ssn so that only 6 first digits remain
         String modifiedSSN = removeDelimiter(partialSSN);
@@ -91,7 +91,7 @@ public class SSNGenerator {
             
             while(!isValidRandomNumber) {
                 if(isPermanent) {
-                    lastDigits = rnd.nextInt(900);
+                    lastDigits = rnd.nextInt(900 - 2 + 1) + 2;
                 } else {
                     lastDigits = rnd.nextInt(999 - 900 + 1) + 900;
                 }
@@ -105,19 +105,122 @@ public class SSNGenerator {
                     lastDigits = 0;
                 }
             }
-            
-            int result = 0;
-            
-            result = (lastDigits + Integer.valueOf(modifiedSSN)) / 31;
-            
-            for(Enum chk : Checkmark.values()) {
-                if(chk.equals(result)) {
-                    isValidAgainstCheckmark = true;
-                    checkmark = (char) result;
-                }
-            }
+            isValidAgainstCheckmark = isValidSSN(modifiedSSN + String.valueOf(lastDigits));
         }
         
-        return String.valueOf(lastDigits) + String.valueOf(checkmark);
+        // Add leading zeroes if generated number is smaller than 100 or 10
+        if(lastDigits <= 99 && lastDigits >= 10) {
+            String returnValue = "";
+            returnValue = String.format("%02d", lastDigits);
+            return returnValue + String.valueOf(checkmark);
+        } else if(lastDigits <= 9) {
+            String returnValue = "";
+            returnValue = String.format("%03d", lastDigits);
+            return returnValue + String.valueOf(checkmark);
+        } else {
+            return lastDigits + String.valueOf(checkmark);
+        }
+    }
+    
+    private boolean isValidSSN(String ssn) {   
+        int result = Integer.valueOf(ssn) % 31;
+
+        switch(result) {
+            case 0: 
+                checkmark = '0';
+                return true;
+            case 1:
+                checkmark = '1';
+                return true;
+            case 2:
+                checkmark = '2';
+                return true;
+            case 3:
+                checkmark = '3';
+                return true;
+            case 4: 
+                checkmark = '4';
+                return true;
+            case 5: 
+                checkmark = '5';
+                return true;
+            case 6:
+                checkmark = '6';
+                return true;
+            case 7:
+                checkmark = '7';
+                return true;
+            case 8:
+                checkmark = '8';
+                return true;
+            case 9:
+                checkmark = '9';
+                return true;
+            case 10:
+                checkmark = 'A';
+                return true;
+            case 11:
+                checkmark = 'B';
+                return true;
+            case 12: 
+                checkmark = 'C';
+                return true;
+            case 13:
+                checkmark = 'D';
+                return true;
+            case 14:
+                checkmark = 'E';
+                return true;
+            case 15: 
+                checkmark = 'F';
+                return true;
+            case 16:
+                checkmark = 'H';
+                return true;
+            case 17:
+                checkmark = 'J';
+                return true;
+            case 18: 
+                checkmark = 'K';
+                return true;
+            case 19: 
+                checkmark = 'L';
+                return true;
+            case 20:
+                checkmark = 'M';
+                return true;
+            case 21:
+                checkmark = 'N';
+                return true;
+            case 22:
+                checkmark = 'P';
+                return true;
+            case 23:
+                checkmark = 'R';
+                return true;
+            case 24:
+                checkmark = 'S';
+                return true;
+            case 25:
+                checkmark = 'T';
+                return true;
+            case 26:
+                checkmark = 'I';
+                return true;
+            case 27:
+                checkmark = 'V';
+                return true;
+            case 28:
+                checkmark = 'W';
+                return true;
+            case 29:
+                checkmark = 'X';
+                return true;
+            case 39:
+                checkmark = 'Y';
+                return true;
+            default:
+                return false;
+        }
     }
 }
