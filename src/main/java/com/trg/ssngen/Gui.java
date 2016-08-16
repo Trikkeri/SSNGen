@@ -34,95 +34,95 @@ public class Gui implements Runnable {
     }
 
     private void createComponents(Container container) {
-        JLabel jlbl;
-        JButton jbtn;
-        JRadioButton jRadiobtn;
-        JTextField jtxtfield;
-        JFormattedTextField jftxtfield;
+        JFormattedTextField jTtxtfieldDate;
+        JRadioButton jRadiobtnGenderF;
+        JRadioButton jRadiobtnGenderM;
+        JRadioButton jRadiobtnPermSSN;
+        JRadioButton jRadiobtnTempSSN;
+        JButton jbtnGenerateSSN;
+        JTextField jTxtfieldSSN;
+        JLabel jlblValidtyIcon;
+
         GridBagLayout gbl = new GridBagLayout();
         container.setLayout(gbl);
         GridBagConstraints gbc  = new GridBagConstraints();
+        
+        ButtonGroup ssnGenderBGroup = new ButtonGroup();
+        ButtonGroup ssnModeBGroup = new ButtonGroup();
                
         int i = 0;
         
         i++;
         
-        jftxtfield = new JFormattedTextField(new SimpleDateFormat("dd.MM.yyyy"));
-        jftxtfield.setText("01.12.2015");
-        jftxtfield.setPreferredSize(new Dimension(75,20));
+        jTtxtfieldDate = new JFormattedTextField(new SimpleDateFormat("dd.MM.yyyy"));
+        jTtxtfieldDate.setText("01.12.2015");
+        jTtxtfieldDate.setPreferredSize(new Dimension(75,20));
         gbc.gridx = 0;
         gbc.gridy = i;
         gbc.insets = new Insets(2,2,2,2);
-        container.add(jftxtfield, gbc);
+        container.add(jTtxtfieldDate, gbc);
         
-        i++;
+        i++;     
         
-        // Radiobuttons & group for selecting gender
-        ButtonGroup ssnGenderBGroup = new ButtonGroup();
-        
-        jRadiobtn = new JRadioButton("Female");
-        jRadiobtn.setSelected(true);
+        jRadiobtnGenderF = new JRadioButton("Female");
+        jRadiobtnGenderF.setSelected(true);
         gbc.gridx = 0;
         gbc.gridy = i;
-        ssnGenderBGroup.add(jRadiobtn);
-        container.add(jRadiobtn, gbc);
+        ssnGenderBGroup.add(jRadiobtnGenderF);
+        container.add(jRadiobtnGenderF, gbc);
         
         i++;
         
-        jRadiobtn = new JRadioButton("Male"); 
+        jRadiobtnGenderM = new JRadioButton("Male"); 
         gbc.gridx = 0;
         gbc.gridy = i;
-        ssnGenderBGroup.add(jRadiobtn);
-        container.add(jRadiobtn, gbc);
+        ssnGenderBGroup.add(jRadiobtnGenderM);
+        container.add(jRadiobtnGenderM, gbc);
         
         i++;
         
-        // Radiobuttons & group for selecting SSN type
-        ButtonGroup ssnModeBGroup = new ButtonGroup();
-        
-        jRadiobtn = new JRadioButton("Temporary SSN");
-        jRadiobtn.setSelected(true);
+        jRadiobtnPermSSN = new JRadioButton("Permanent SSN"); 
         gbc.gridx = 0;
         gbc.gridy = i;
-        ssnModeBGroup.add(jRadiobtn);
-        container.add(jRadiobtn, gbc);
+        ssnModeBGroup.add(jRadiobtnPermSSN);
+        container.add(jRadiobtnPermSSN, gbc);
         
         i++;
         
-        jRadiobtn = new JRadioButton("Permanent SSN"); 
+        jRadiobtnTempSSN = new JRadioButton("Temporary SSN");
+        jRadiobtnTempSSN.setSelected(true);
         gbc.gridx = 0;
         gbc.gridy = i;
-        ssnModeBGroup.add(jRadiobtn);
-        container.add(jRadiobtn, gbc);
+        ssnModeBGroup.add(jRadiobtnTempSSN);
+        container.add(jRadiobtnTempSSN, gbc);
         
         i++;
-        
-        SSNGenListener ssgl = new SSNGenListener(jftxtfield);
-        
-        jbtn = new JButton("Generate SSN");
+               
+        jbtnGenerateSSN = new JButton("Generate SSN");
         gbc.gridx = 0;
         gbc.gridy = i;
-        jbtn.addActionListener(ssgl);
-        container.add(jbtn, gbc);
-        
+        jbtnGenerateSSN.addActionListener(ssgl);
+        SSNGenListener ssgl = new SSNGenListener(jTtxtfieldDate, jRadiobtnGenderF, jRadiobtnPermSSN, jTextField jTxtfieldSSN);
+        container.add(jbtnGenerateSSN, gbc);
+
         i++;
         
-        jtxtfield = new JTextField();
-        jtxtfield.setEditable(false);
-        jtxtfield.setPreferredSize(new Dimension(83,20));
+        jTxtfieldSSN = new JTextField();
+        jTxtfieldSSN.setEditable(false);
+        jTxtfieldSSN.setPreferredSize(new Dimension(83,20));
         //jtxtfield.setText("010101-0101");
         gbc.gridx = 0;
         gbc.gridy = i;
-        container.add(jtxtfield, gbc);
+        container.add(jTxtfieldSSN, gbc);
         
-        jlbl = new JLabel();
+        jlblValidtyIcon = new JLabel();
         gbc.gridx = 1;
         gbc.gridy = i;
         gbc.anchor = GridBagConstraints.NORTHEAST;
         ImageIcon okIcon = new ImageIcon("src/main/resources/icons/ok.png", "SSN is valid!");
         
-        jlbl.setIcon(okIcon);
-        container.add(jlbl, gbc);
+        jlblValidtyIcon.setIcon(okIcon);
+        container.add(jlblValidtyIcon, gbc);
     }
     
 }

@@ -107,14 +107,13 @@ public class SSNGenerator {
             }
             isValidAgainstCheckmark = isValidSSN(modifiedSSN + String.valueOf(lastDigits));
         }
-        
         // Add leading zeroes if generated number is smaller than 100 or 10
+        String returnValue = "";
+
         if(lastDigits <= 99 && lastDigits >= 10) {
-            String returnValue = "";
             returnValue = String.format("%02d", lastDigits);
             return returnValue + String.valueOf(checkmark);
         } else if(lastDigits <= 9) {
-            String returnValue = "";
             returnValue = String.format("%03d", lastDigits);
             return returnValue + String.valueOf(checkmark);
         } else {
