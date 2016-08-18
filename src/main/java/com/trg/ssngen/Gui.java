@@ -101,12 +101,13 @@ public class Gui implements Runnable {
         jbtnGenerateSSN = new JButton("Generate SSN");
         gbc.gridx = 0;
         gbc.gridy = i;
-        jbtnGenerateSSN.addActionListener(ssgl);
-        SSNGenListener ssgl = new SSNGenListener(jTtxtfieldDate, jRadiobtnGenderF, jRadiobtnPermSSN, jTextField jTxtfieldSSN);
+
+
         container.add(jbtnGenerateSSN, gbc);
 
         i++;
-        
+
+
         jTxtfieldSSN = new JTextField();
         jTxtfieldSSN.setEditable(false);
         jTxtfieldSSN.setPreferredSize(new Dimension(83,20));
@@ -114,15 +115,18 @@ public class Gui implements Runnable {
         gbc.gridx = 0;
         gbc.gridy = i;
         container.add(jTxtfieldSSN, gbc);
-        
+
         jlblValidtyIcon = new JLabel();
         gbc.gridx = 1;
         gbc.gridy = i;
         gbc.anchor = GridBagConstraints.NORTHEAST;
         ImageIcon okIcon = new ImageIcon("src/main/resources/icons/ok.png", "SSN is valid!");
-        
         jlblValidtyIcon.setIcon(okIcon);
         container.add(jlblValidtyIcon, gbc);
+        
+        // ActionListener for generate button
+        SSNGenListener ssgl = new SSNGenListener(jTtxtfieldDate, jRadiobtnGenderF, jRadiobtnPermSSN, jTxtfieldSSN);
+        jbtnGenerateSSN.addActionListener(ssgl);
     }
     
 }

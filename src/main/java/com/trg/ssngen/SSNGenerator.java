@@ -3,10 +3,12 @@ package com.trg.ssngen;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
 
 public class SSNGenerator {  
     private char checkmark;
-
+    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(SSNGenListener.class);
+    
     public String generateSSN(boolean isPermanent, Date date, char gender) {  
         StringBuilder sb = new StringBuilder();
         
@@ -68,13 +70,15 @@ public class SSNGenerator {
     }
 
     private String removeDelimiter(String ssn) {
+        //Logger.logMsg(Logger.DEBUG, "removeDelimiter called, parameter: " + ssn);
+        //Logger.logMsg(Logger.DEBUG, "Starting to rebuild ssn without delimiter");
         String modifiedSSN = "";
         for(char ch : ssn.toCharArray()) {
             if(ch != '-' && ch != '+' && ch != 'A') {
-                System.out.println("EHTO TäYTTYY");
                 modifiedSSN += String.valueOf(ch);
             }
         }
+        //Logger.logMsg(Logger.DEBUG, "SSN rebuilding done, return value: " + modifiedSSN);
         return modifiedSSN;
     }
     
