@@ -18,20 +18,20 @@ public class SSNGenListener implements ActionListener {
     private JRadioButton genderF;
     private JRadioButton ssnPermanent;
     private JTextField generatedSSN;
+    private SSNGenerator ssngen;
     
-    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(SSNGenListener.class);
+    //private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(SSNGenListener.class);
     
     public SSNGenListener(JFormattedTextField date, JRadioButton genderF, JRadioButton ssnPermanent, JTextField generatedSSN) {
         this.date = date;
         this.genderF = genderF;
         this.ssnPermanent = ssnPermanent;
         this.generatedSSN = generatedSSN;
+        ssngen = new SSNGenerator();
     }
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        
-        SSNGenerator ssngen = new SSNGenerator();
         
         char gender = '0';
         boolean isPermanent = true;
@@ -42,7 +42,7 @@ public class SSNGenListener implements ActionListener {
         try {
             convertedDate = format.parse(str);
         } catch (ParseException ex) {
-            logger.log(org.apache.logging.log4j.Level.FATAL, ex.toString());
+            //logger.log(org.apache.logging.log4j.Level.FATAL, ex.toString());
         }
         
         if(genderF.isSelected()) {

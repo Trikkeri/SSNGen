@@ -7,7 +7,7 @@ import org.apache.logging.log4j.LogManager;
 
 public class SSNGenerator {  
     private char checkmark;
-    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(SSNGenListener.class);
+    //private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(SSNGenListener.class);
     
     public String generateSSN(boolean isPermanent, Date date, char gender) {  
         StringBuilder sb = new StringBuilder();
