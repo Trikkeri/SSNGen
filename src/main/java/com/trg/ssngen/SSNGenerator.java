@@ -8,7 +8,7 @@ import org.apache.logging.log4j.LogManager;
 public class SSNGenerator {  
     private char verificationmark;
     private static final org.apache.logging.log4j.Logger Logger = LogManager.getLogger(SSNGenListener.class);
-    
+      
     public String generateSSN(boolean isPermanent, Date date, char gender) {  
         Logger.debug("Starting to generate SSN");
     	StringBuilder sb = new StringBuilder();
