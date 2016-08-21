@@ -6,11 +6,12 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 
 public class SSNGenerator {  
-    private char checkmark;
-    //private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(SSNGenListener.class);
+    private char verificationmark;
+    private static final org.apache.logging.log4j.Logger Logger = LogManager.getLogger(SSNGenListener.class);
     
     public String generateSSN(boolean isPermanent, Date date, char gender) {  
-        StringBuilder sb = new StringBuilder();
+        Logger.debug("Starting to generate SSN");
+    	StringBuilder sb = new StringBuilder();
         
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -41,11 +42,13 @@ public class SSNGenerator {
             sb.append("+");
         }
         
+        Logger.debug("Rebuilt date for ssn: " + sb.toString());
+        
         // Generate random portion of ssn until valid ssn is generated
         String threeDigitsAndCheckmark = generateLastNumbersAndCheckmark(sb.toString(), isPermanent, gender);
         
         sb.append(threeDigitsAndCheckmark);
-        
+        Logger.debug("SSN Generation DONE: " + sb.toString());
         return sb.toString();
     }
     
@@ -70,15 +73,14 @@ public class SSNGenerator {
     }
 
     private String removeDelimiter(String ssn) {
-        //Logger.logMsg(Logger.DEBUG, "removeDelimiter called, parameter: " + ssn);
-        //Logger.logMsg(Logger.DEBUG, "Starting to rebuild ssn without delimiter");
+        Logger.debug("Starting to rebuild " + ssn + " without delimiter");
         String modifiedSSN = "";
         for(char ch : ssn.toCharArray()) {
             if(ch != '-' && ch != '+' && ch != 'A') {
                 modifiedSSN += String.valueOf(ch);
             }
         }
-        //Logger.logMsg(Logger.DEBUG, "SSN rebuilding done, return value: " + modifiedSSN);
+        Logger.debug("SSN rebuilding done, return value: " + modifiedSSN);
         return modifiedSSN;
     }
     
@@ -88,18 +90,22 @@ public class SSNGenerator {
         boolean isValidAgainstCheckmark = false;
         int lastDigits = 000;
         
+        Logger.debug("Starting to generate last numbers and checkmark for " + partialSSN + ". Using rules: isPermanent: " + isPermanent + ", gender: " + gender) ;
+        
         // Remove delimiter from ssn so that only 6 first digits remain
         String modifiedSSN = removeDelimiter(partialSSN);
-
+        int loopCalc = 0;
         while(!isValidAgainstCheckmark) {
-            
+            Logger.debug("Generated ssn is valid against calculated checksum? " + isValidAgainstCheckmark);
+            Logger.debug("Starting while loop " + String.valueOf(loopCalc));
             while(!isValidRandomNumber) {
+            	Logger.debug("Generated last numbers are valid? " + isValidRandomNumber);
                 if(isPermanent) {
                     lastDigits = rnd.nextInt(900 - 2 + 1) + 2;
                 } else {
                     lastDigits = rnd.nextInt(999 - 900 + 1) + 900;
                 }
-
+                Logger.debug("Generated last digits for ssn: " + lastDigits);
                 if(gender == 'F' && lastDigits % 2 == 0) {
                     isValidRandomNumber = true;
                 } else if(gender == 'M' && lastDigits % 2 == 1) {
@@ -110,120 +116,126 @@ public class SSNGenerator {
                 }
             }
             isValidAgainstCheckmark = isValidSSN(modifiedSSN + String.valueOf(lastDigits));
+            loopCalc++;
+            Logger.debug("isValidAgainstCheckmark has been set to " +isValidAgainstCheckmark + " after calculating checkmark and checkmark is " + this.verificationmark);
         }
         // Add leading zeroes if generated number is smaller than 100 or 10
         String returnValue = "";
 
         if(lastDigits <= 99 && lastDigits >= 10) {
             returnValue = String.format("%02d", lastDigits);
-            return returnValue + String.valueOf(checkmark);
+            Logger.debug("SSN Generation done, returning value: " + returnValue);
+            return returnValue + String.valueOf(verificationmark);
         } else if(lastDigits <= 9) {
             returnValue = String.format("%03d", lastDigits);
-            return returnValue + String.valueOf(checkmark);
+            Logger.debug("SSN Generation done, returning value: " + returnValue);
+            return returnValue + String.valueOf(verificationmark);
         } else {
-            return lastDigits + String.valueOf(checkmark);
+        	Logger.debug("SSN Generation done, returning value: " + returnValue);
+            return lastDigits + String.valueOf(verificationmark);
         }
     }
     
     private boolean isValidSSN(String ssn) {   
-        int result = Integer.valueOf(ssn) % 31;
-
-        switch(result) {
+        int remainder = Integer.valueOf(ssn) % 31;
+        Logger.debug("Checking if " + ssn + "is valid");
+        Logger.debug(ssn +" % 31 = " + remainder);
+        switch(remainder) {
             case 0: 
-                checkmark = '0';
+                verificationmark = '0';
                 return true;
             case 1:
-                checkmark = '1';
+                verificationmark = '1';
                 return true;
             case 2:
-                checkmark = '2';
+                verificationmark = '2';
                 return true;
             case 3:
-                checkmark = '3';
+                verificationmark = '3';
                 return true;
             case 4: 
-                checkmark = '4';
+                verificationmark = '4';
                 return true;
             case 5: 
-                checkmark = '5';
+                verificationmark = '5';
                 return true;
             case 6:
-                checkmark = '6';
+                verificationmark = '6';
                 return true;
             case 7:
-                checkmark = '7';
+                verificationmark = '7';
                 return true;
             case 8:
-                checkmark = '8';
+                verificationmark = '8';
                 return true;
             case 9:
-                checkmark = '9';
+                verificationmark = '9';
                 return true;
             case 10:
-                checkmark = 'A';
+                verificationmark = 'A';
                 return true;
             case 11:
-                checkmark = 'B';
+                verificationmark = 'B';
                 return true;
             case 12: 
-                checkmark = 'C';
+                verificationmark = 'C';
                 return true;
             case 13:
-                checkmark = 'D';
+                verificationmark = 'D';
                 return true;
             case 14:
-                checkmark = 'E';
+                verificationmark = 'E';
                 return true;
             case 15: 
-                checkmark = 'F';
+                verificationmark = 'F';
                 return true;
             case 16:
-                checkmark = 'H';
+                verificationmark = 'H';
                 return true;
             case 17:
-                checkmark = 'J';
+                verificationmark = 'J';
                 return true;
             case 18: 
-                checkmark = 'K';
+                verificationmark = 'K';
                 return true;
             case 19: 
-                checkmark = 'L';
+                verificationmark = 'L';
                 return true;
             case 20:
-                checkmark = 'M';
+                verificationmark = 'M';
                 return true;
             case 21:
-                checkmark = 'N';
+                verificationmark = 'N';
                 return true;
             case 22:
-                checkmark = 'P';
+                verificationmark = 'P';
                 return true;
             case 23:
-                checkmark = 'R';
+                verificationmark = 'R';
                 return true;
             case 24:
-                checkmark = 'S';
+                verificationmark = 'S';
                 return true;
             case 25:
-                checkmark = 'T';
+                verificationmark = 'T';
                 return true;
             case 26:
-                checkmark = 'I';
+                verificationmark = 'I';
                 return true;
             case 27:
-                checkmark = 'V';
+                verificationmark = 'V';
                 return true;
             case 28:
-                checkmark = 'W';
+                verificationmark = 'W';
                 return true;
             case 29:
-                checkmark = 'X';
+                verificationmark = 'X';
                 return true;
-            case 39:
-                checkmark = 'Y';
+            case 30:
+                verificationmark = 'Y';
                 return true;
-            default:
-                return false;
         }
+        verificationmark = (Character) null;
+        return false;
     }
 }

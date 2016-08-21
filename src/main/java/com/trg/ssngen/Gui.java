@@ -81,7 +81,8 @@ public class Gui implements Runnable {
         
         i++;
         
-        jRadiobtnPermSSN = new JRadioButton("Permanent SSN"); 
+        jRadiobtnPermSSN = new JRadioButton("Permanent SSN");
+        jRadiobtnPermSSN.setSelected(true);
         gbc.gridx = 0;
         gbc.gridy = i;
         ssnModeBGroup.add(jRadiobtnPermSSN);
@@ -90,7 +91,6 @@ public class Gui implements Runnable {
         i++;
         
         jRadiobtnTempSSN = new JRadioButton("Temporary SSN");
-        jRadiobtnTempSSN.setSelected(true);
         gbc.gridx = 0;
         gbc.gridy = i;
         ssnModeBGroup.add(jRadiobtnTempSSN);
@@ -101,12 +101,9 @@ public class Gui implements Runnable {
         jbtnGenerateSSN = new JButton("Generate SSN");
         gbc.gridx = 0;
         gbc.gridy = i;
-
-
         container.add(jbtnGenerateSSN, gbc);
 
         i++;
-
 
         jTxtfieldSSN = new JTextField();
         jTxtfieldSSN.setEditable(false);
