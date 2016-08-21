@@ -1,5 +1,8 @@
 package com.trg.ssngen;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
@@ -52,6 +55,11 @@ public class SSNGenListener implements ActionListener {
         isPermanent = ssnPermanent.isSelected();
         logger.debug("Parameters for generating ssn: Permanent SSN: " + isPermanent + ", Date: " + convertedDate + ", gender: " + gender);
         generatedSSN.setText(ssngen.generateSSN(isPermanent, convertedDate, gender));
+        
+        // Copy automagically to clipboard
+        StringSelection stringSelection = new StringSelection(generatedSSN.getText());
+        Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clpbrd.setContents(stringSelection, null);
     }
     
 }
