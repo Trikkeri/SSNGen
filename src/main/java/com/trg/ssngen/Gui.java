@@ -5,7 +5,10 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.io.File;
 import java.text.SimpleDateFormat;
+
+import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,7 +29,7 @@ public class Gui implements Runnable {
         //this.JFrame.setPreferredSize(new Dimension(280, 200));
         this.JFrame.setPreferredSize(new Dimension(300, 300));
         this.JFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        
+
         createComponents(this.JFrame.getContentPane());
         
         this.JFrame.pack();
@@ -116,8 +119,8 @@ public class Gui implements Runnable {
         jlblValidtyIcon = new JLabel();
         gbc.gridx = 1;
         gbc.gridy = i;
-        gbc.anchor = GridBagConstraints.NORTHEAST;
-        ImageIcon okIcon = new ImageIcon("src/main/resources/icons/ok.png", "SSN is valid!");
+        gbc.anchor = GridBagConstraints.NORTHEAST;      
+        ImageIcon okIcon = new ImageIcon(Main.class.getResource("/ok.png"));
         jlblValidtyIcon.setIcon(okIcon);
         container.add(jlblValidtyIcon, gbc);
         
