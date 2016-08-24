@@ -52,24 +52,14 @@ public class SSNGenerator {
         return sb.toString();
     }
     
-    public boolean checkSSNValidity(String ssn) {
+    public boolean isSSNValid(String ssn) {
         
-        if(ssn.isEmpty()) {
-            return false;
-        }
-        
-        // Remove delimiter from ssn so that only 9 first digits remain
-        String modifiedSSN = removeDelimiter(ssn);
-        
-        // Remove checkmark from the end of ssn
-       
-        
-        
-        if(Integer.valueOf(modifiedSSN) % 31 == 1) {
-            return true;
-        } else {
-            return false;
-        }
+//        if(ssn.isEmpty()) {
+//            return false;
+//        }
+//        // Remove delimiter from ssn so that only 9 first digits remain
+//        String modifiedSSN = removeDelimiter(ssn);
+    	return false;
     }
 
     private String removeDelimiter(String ssn) {

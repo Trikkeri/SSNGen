@@ -5,10 +5,9 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
-import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,6 +17,9 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 
 public class Gui implements Runnable {
 
@@ -27,7 +29,7 @@ public class Gui implements Runnable {
     public void run() {
         this.JFrame = new JFrame("SSN Generator");
         //this.JFrame.setPreferredSize(new Dimension(280, 200));
-        this.JFrame.setPreferredSize(new Dimension(300, 300));
+        this.JFrame.setPreferredSize(new Dimension(360, 200));
         this.JFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         createComponents(this.JFrame.getContentPane());
@@ -37,9 +39,12 @@ public class Gui implements Runnable {
     }
 
     private void createComponents(Container container) {
+    	JLabel jlblbirthDate;
         JFormattedTextField jTtxtfieldDate;
+        JLabel jlblGender;
         JRadioButton jRadiobtnGenderF;
         JRadioButton jRadiobtnGenderM;
+        JLabel jlblSsnmode;
         JRadioButton jRadiobtnPermSSN;
         JRadioButton jRadiobtnTempSSN;
         JButton jbtnGenerateSSN;
@@ -52,81 +57,99 @@ public class Gui implements Runnable {
         
         ButtonGroup ssnGenderBGroup = new ButtonGroup();
         ButtonGroup ssnModeBGroup = new ButtonGroup();
-               
-        int i = 0;
-        
-        i++;
+                               
+        jlblbirthDate = new JLabel("Birthdate:");
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        container.add(jlblbirthDate,gbc);
         
         jTtxtfieldDate = new JFormattedTextField(new SimpleDateFormat("dd.MM.yyyy"));
+        int charLimit = 10;
+        jTtxtfieldDate.setPreferredSize(new Dimension(90,20));
+        
+        jTtxtfieldDate.setDocument(new PlainDocument() {
+        	@Override
+        	public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
+            if(getLength() + str.length() <= charLimit)
+                super.insertString(offset, str, a);
+        	}
+        });
+        
         jTtxtfieldDate.setText("01.12.2015");
-        jTtxtfieldDate.setPreferredSize(new Dimension(75,20));
         gbc.gridx = 0;
-        gbc.gridy = i;
-        gbc.insets = new Insets(2,2,2,2);
-        container.add(jTtxtfieldDate, gbc);
+        gbc.gridy = 1;
+        container.add(jTtxtfieldDate, gbc);  
         
-        i++;     
-        
+        jlblGender = new JLabel("Gender:");
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        container.add(jlblGender,gbc);
+                
         jRadiobtnGenderF = new JRadioButton("Female");
         jRadiobtnGenderF.setSelected(true);
-        gbc.gridx = 0;
-        gbc.gridy = i;
+        gbc.gridx = 1;
+        gbc.gridy = 1;
         ssnGenderBGroup.add(jRadiobtnGenderF);
         container.add(jRadiobtnGenderF, gbc);
-        
-        i++;
-        
+               
         jRadiobtnGenderM = new JRadioButton("Male"); 
-        gbc.gridx = 0;
-        gbc.gridy = i;
+        gbc.gridx = 1;
+        gbc.gridy = 2;
         ssnGenderBGroup.add(jRadiobtnGenderM);
         container.add(jRadiobtnGenderM, gbc);
-        
-        i++;
+                
+        jlblSsnmode = new JLabel("SSN type:");
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        container.add(jlblSsnmode,gbc);
         
         jRadiobtnPermSSN = new JRadioButton("Permanent SSN");
         jRadiobtnPermSSN.setSelected(true);
-        gbc.gridx = 0;
-        gbc.gridy = i;
+        gbc.gridx = 2;
+        gbc.gridy = 1;
         ssnModeBGroup.add(jRadiobtnPermSSN);
         container.add(jRadiobtnPermSSN, gbc);
-        
-        i++;
-        
+               
         jRadiobtnTempSSN = new JRadioButton("Temporary SSN");
-        gbc.gridx = 0;
-        gbc.gridy = i;
+        gbc.gridx = 2;
+        gbc.gridy = 2;
         ssnModeBGroup.add(jRadiobtnTempSSN);
         container.add(jRadiobtnTempSSN, gbc);
         
-        i++;
-               
         jbtnGenerateSSN = new JButton("Generate SSN");
-        gbc.gridx = 0;
-        gbc.gridy = i;
+        gbc.insets = new Insets(10,0,0,0);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.anchor = GridBagConstraints.CENTER;    
         container.add(jbtnGenerateSSN, gbc);
-
-        i++;
 
         jTxtfieldSSN = new JTextField();
         jTxtfieldSSN.setEditable(false);
-        jTxtfieldSSN.setPreferredSize(new Dimension(83,20));
-        //jtxtfield.setText("010101-0101");
-        gbc.gridx = 0;
-        gbc.gridy = i;
+        jTxtfieldSSN.setPreferredSize(new Dimension(90,20));
+        gbc.gridx = 1;
+        gbc.gridy = 4;
         container.add(jTxtfieldSSN, gbc);
 
         jlblValidtyIcon = new JLabel();
-        gbc.gridx = 1;
-        gbc.gridy = i;
-        gbc.anchor = GridBagConstraints.NORTHEAST;      
-        ImageIcon okIcon = new ImageIcon(Main.class.getResource("/ok.png"));
-        jlblValidtyIcon.setIcon(okIcon);
+        gbc.anchor = GridBagConstraints.WEST;  
+        gbc.gridx = 2;
+        gbc.gridy = 4;
         container.add(jlblValidtyIcon, gbc);
         
         // ActionListener for generate button
-        SSNGenListener ssgl = new SSNGenListener(jTtxtfieldDate, jRadiobtnGenderF, jRadiobtnPermSSN, jTxtfieldSSN);
+        SSNGenListener ssgl = new SSNGenListener(jTtxtfieldDate, jRadiobtnGenderF, jRadiobtnPermSSN, jTxtfieldSSN, jlblValidtyIcon);
         jbtnGenerateSSN.addActionListener(ssgl);
     }
+    
+//    private String setDefaultDateAsValue() {
+//    	
+//        Calendar cal = Calendar.getInstance();
+//        cal.
+//    	
+//    	return "";
+//    }
+//    
+
     
 }

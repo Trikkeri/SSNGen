@@ -9,7 +9,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.swing.ImageIcon;
 import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import org.apache.logging.log4j.LogManager;
@@ -20,12 +23,14 @@ public class SSNGenListener implements ActionListener {
     private JRadioButton ssnPermanent;
     private JTextField generatedSSN;
     private SSNGenerator ssngen;
+    private JLabel jlblValidityIcon;
     
     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(SSNGenListener.class);
     
-    public SSNGenListener(JFormattedTextField date, JRadioButton genderF, JRadioButton ssnPermanent, JTextField generatedSSN) {
+    public SSNGenListener(JFormattedTextField date, JRadioButton genderF, JRadioButton ssnPermanent, JTextField generatedSSN, JLabel jlblValidityIcon) {
         this.date = date;
         this.genderF = genderF;
+        this.jlblValidityIcon = jlblValidityIcon;
         this.ssnPermanent = ssnPermanent;
         this.generatedSSN = generatedSSN;
         ssngen = new SSNGenerator();
@@ -54,12 +59,28 @@ public class SSNGenListener implements ActionListener {
         
         isPermanent = ssnPermanent.isSelected();
         logger.debug("Parameters for generating ssn: Permanent SSN: " + isPermanent + ", Date: " + convertedDate + ", gender: " + gender);
-        generatedSSN.setText(ssngen.generateSSN(isPermanent, convertedDate, gender));
         
-        // Copy automagically to clipboard
-        StringSelection stringSelection = new StringSelection(generatedSSN.getText());
-        Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clpbrd.setContents(stringSelection, null);
+        String ssn = ssngen.generateSSN(isPermanent, convertedDate, gender);
+        generatedSSN.setText(ssn);
+        
+        // Set validity icon as success if generated ssn is valid
+        if(ssngen.isSSNValid(ssn)) {
+        	
+            // Copy automagically to clipboard
+            StringSelection stringSelection = new StringSelection(generatedSSN.getText());
+            Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clpbrd.setContents(stringSelection, null);
+            
+            ImageIcon okIcon = new ImageIcon(Main.class.getResource("/success.png"));
+            jlblValidityIcon.setIcon(okIcon);
+            
+        	
+        } else {
+            ImageIcon okIcon = new ImageIcon(Main.class.getResource("/failure.png"));
+            jlblValidityIcon.setIcon(okIcon);
+        }
+        
+
     }
     
 }
