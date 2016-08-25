@@ -132,6 +132,7 @@ public class Gui implements Runnable {
         container.add(jTxtfieldSSN, gbc);
 
         jlblValidtyIcon = new JLabel();
+        jlblValidtyIcon.setPreferredSize(new Dimension(25,25));
         gbc.anchor = GridBagConstraints.WEST;  
         gbc.gridx = 2;
         gbc.gridy = 4;

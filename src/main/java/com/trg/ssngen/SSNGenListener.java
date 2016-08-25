@@ -39,6 +39,9 @@ public class SSNGenListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent ae) {
         
+    	String test = "010101-010";
+    	System.out.println(ssngen.isSSNValid(test));
+    	
         char gender = '0';
         boolean isPermanent = true;
         Date convertedDate = null;

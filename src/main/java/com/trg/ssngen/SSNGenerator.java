@@ -54,12 +54,17 @@ public class SSNGenerator {
     
     public boolean isSSNValid(String ssn) {
         
-//        if(ssn.isEmpty()) {
-//            return false;
-//        }
-//        // Remove delimiter from ssn so that only 9 first digits remain
-//        String modifiedSSN = removeDelimiter(ssn);
-    	return false;
+        if(ssn.isEmpty() || ssn.length() < 11) {
+            return false;
+        }
+        
+        // Remove delimiter from ssn so that only 9 first digits remain
+        String modifiedSSN = removeDelimiter(ssn);
+ 
+        modifiedSSN = modifiedSSN.substring(0, 9);
+        boolean isValid = isValidSSN(modifiedSSN);
+        Logger.debug("Checking if generated ssn is valid: " + isValid);
+        return isValid;
     }
 
     private String removeDelimiter(String ssn) {
@@ -112,24 +117,13 @@ public class SSNGenerator {
         // Add leading zeroes if generated number is smaller than 100 or 10
         String returnValue = "";
 
-        if(lastDigits <= 99 && lastDigits >= 10) {
-            returnValue = String.format("%02d", lastDigits);
-            Logger.debug("SSN Generation done, returning value: " + returnValue);
-            return returnValue + String.valueOf(verificationmark);
-        } else if(lastDigits <= 9) {
-            returnValue = String.format("%03d", lastDigits);
-            Logger.debug("SSN Generation done, returning value: " + returnValue);
-            return returnValue + String.valueOf(verificationmark);
-        } else {
-        	Logger.debug("SSN Generation done, returning value: " + returnValue);
-            return lastDigits + String.valueOf(verificationmark);
-        }
+	    returnValue = String.format("%03d", lastDigits);
+	    Logger.debug("SSN Generation done, returning value: " + returnValue);
+	    return returnValue + String.valueOf(verificationmark);
     }
     
     private boolean isValidSSN(String ssn) {   
-        int remainder = Integer.valueOf(ssn) % 31;
-        Logger.debug("Checking if " + ssn + "is valid");
-        Logger.debug(ssn +" % 31 = " + remainder);
+        int remainder = calculateRemainder(ssn);
         switch(remainder) {
             case 0: 
                 verificationmark = '0';
@@ -228,4 +222,11 @@ public class SSNGenerator {
         verificationmark = (Character) null;
         return false;
     }
+
+	private int calculateRemainder(String ssn) {
+		int remainder = Integer.valueOf(ssn) % 31;
+        Logger.debug("Checking if " + ssn + " is valid");
+        Logger.debug(ssn +" % 31 = " + remainder);
+		return remainder;
+	}
 }
