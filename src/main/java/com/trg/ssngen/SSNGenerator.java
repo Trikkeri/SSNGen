@@ -6,9 +6,11 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 
 public class SSNGenerator {  
+    private String ssn;
+    private String threeDigits;
     private char verificationmark;
     private static final org.apache.logging.log4j.Logger Logger = LogManager.getLogger(SSNGenListener.class);
-      
+    
     public String generateSSN(boolean isPermanent, Date date, char gender) {  
         Logger.debug("Starting to generate SSN");
     	StringBuilder sb = new StringBuilder();
@@ -84,6 +86,7 @@ public class SSNGenerator {
         boolean isValidRandomNumber = false;
         boolean isValidAgainstCheckmark = false;
         int lastDigits = 000;
+        String zeroPadding = "";
         
         Logger.debug("Starting to generate last numbers and checkmark for " + partialSSN + ". Using rules: isPermanent: " + isPermanent + ", gender: " + gender) ;
         
@@ -110,16 +113,17 @@ public class SSNGenerator {
                     lastDigits = 0;
                 }
             }
-            isValidAgainstCheckmark = isValidSSN(modifiedSSN + String.valueOf(lastDigits));
+            
+            // Add leading zeroes if generated number is smaller than 100 or 10
+            zeroPadding = String.format("%03d", lastDigits);
+            
+            isValidAgainstCheckmark = isValidSSN(modifiedSSN + String.valueOf(zeroPadding));
             loopCalc++;
-            Logger.debug("isValidAgainstCheckmark has been set to " +isValidAgainstCheckmark + " after calculating checkmark and checkmark is " + this.verificationmark);
+            Logger.debug("isValidAgainstCheckmark has been set to " + isValidAgainstCheckmark + " after calculating verificationmark and verificationmark is " + this.verificationmark);
         }
-        // Add leading zeroes if generated number is smaller than 100 or 10
-        String returnValue = "";
 
-	    returnValue = String.format("%03d", lastDigits);
-	    Logger.debug("SSN Generation done, returning value: " + returnValue);
-	    return returnValue + String.valueOf(verificationmark);
+	    Logger.debug("SSN Generation done, returning value: " + modifiedSSN + zeroPadding);
+	    return zeroPadding + String.valueOf(verificationmark);
     }
     
     private boolean isValidSSN(String ssn) {   
@@ -204,7 +208,7 @@ public class SSNGenerator {
                 verificationmark = 'T';
                 return true;
             case 26:
-                verificationmark = 'I';
+                verificationmark = 'U';
                 return true;
             case 27:
                 verificationmark = 'V';
