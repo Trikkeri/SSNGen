@@ -6,8 +6,6 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 
 public class SSNGenerator {  
-    private String ssn;
-    private String threeDigits;
     private char verificationmark;
     private static final org.apache.logging.log4j.Logger Logger = LogManager.getLogger(SSNGenListener.class);
     
@@ -55,7 +53,6 @@ public class SSNGenerator {
     }
     
     public boolean isSSNValid(String ssn) {
-        
         if(ssn.isEmpty() || ssn.length() < 11) {
             return false;
         }

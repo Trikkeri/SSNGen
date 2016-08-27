@@ -38,16 +38,13 @@ public class SSNGenListener implements ActionListener {
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        
-    	String test = "010101-010";
-    	System.out.println(ssngen.isSSNValid(test));
-    	
         char gender = '0';
         boolean isPermanent = true;
         Date convertedDate = null;
                 
         String str = this.date.getText();
         DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        // Add error handling!
         try {
             convertedDate = format.parse(str);
         } catch (ParseException ex) {
@@ -75,15 +72,11 @@ public class SSNGenListener implements ActionListener {
             clpbrd.setContents(stringSelection, null);
             
             ImageIcon okIcon = new ImageIcon(Main.class.getResource("/success.png"));
-            jlblValidityIcon.setIcon(okIcon);
-            
-        	
+            jlblValidityIcon.setIcon(okIcon);        	
         } else {
             ImageIcon okIcon = new ImageIcon(Main.class.getResource("/failure.png"));
             jlblValidityIcon.setIcon(okIcon);
         }
-        
-
     }
     
 }

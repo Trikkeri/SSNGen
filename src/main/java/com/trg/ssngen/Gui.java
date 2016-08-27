@@ -5,8 +5,10 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -28,7 +30,6 @@ public class Gui implements Runnable {
     @Override
     public void run() {
         this.JFrame = new JFrame("SSN Generator");
-        //this.JFrame.setPreferredSize(new Dimension(280, 200));
         this.JFrame.setPreferredSize(new Dimension(360, 200));
         this.JFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -76,7 +77,7 @@ public class Gui implements Runnable {
         	}
         });
         
-        jTtxtfieldDate.setText("01.12.2015");
+        jTtxtfieldDate.setText(setDefaultDate());
         gbc.gridx = 0;
         gbc.gridy = 1;
         container.add(jTtxtfieldDate, gbc);  
@@ -143,14 +144,10 @@ public class Gui implements Runnable {
         jbtnGenerateSSN.addActionListener(ssgl);
     }
     
-//    private String setDefaultDateAsValue() {
-//    	
-//        Calendar cal = Calendar.getInstance();
-//        cal.
-//    	
-//    	return "";
-//    }
-//    
-
-    
+    private String setDefaultDate() {
+    	Calendar cal = Calendar.getInstance();
+    	cal.add(Calendar.YEAR, -18);
+    	Date calToDate = cal.getTime();
+    	return new SimpleDateFormat("dd.MM.yyyy").format(calToDate);
+    }
 }
