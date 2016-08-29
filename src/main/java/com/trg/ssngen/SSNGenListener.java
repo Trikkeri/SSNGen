@@ -70,12 +70,14 @@ public class SSNGenListener implements ActionListener {
             StringSelection stringSelection = new StringSelection(generatedSSN.getText());
             Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
             clpbrd.setContents(stringSelection, null);
-            
+            generatedSSN.setToolTipText("SSN has been automatically copied to clipboard");
             ImageIcon okIcon = new ImageIcon(Main.class.getResource("/success.png"));
-            jlblValidityIcon.setIcon(okIcon);        	
+            jlblValidityIcon.setIcon(okIcon);
+            jlblValidityIcon.setToolTipText("Generated SSN is valid");
         } else {
             ImageIcon okIcon = new ImageIcon(Main.class.getResource("/failure.png"));
             jlblValidityIcon.setIcon(okIcon);
+            jlblValidityIcon.setToolTipText("Generated SSN is invalid");
         }
     }
     

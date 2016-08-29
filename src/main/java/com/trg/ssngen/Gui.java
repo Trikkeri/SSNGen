@@ -67,7 +67,7 @@ public class Gui implements Runnable {
         
         jTtxtfieldDate = new JFormattedTextField(new SimpleDateFormat("dd.MM.yyyy"));
         int charLimit = 10;
-        jTtxtfieldDate.setPreferredSize(new Dimension(90,20));
+        jTtxtfieldDate.setPreferredSize(new Dimension(80,20));
         
         jTtxtfieldDate.setDocument(new PlainDocument() {
         	@Override
