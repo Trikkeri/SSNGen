@@ -5,13 +5,11 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -76,7 +74,7 @@ public class Gui implements Runnable {
                 super.insertString(offset, str, a);
         	}
         });
-        
+
         jTtxtfieldDate.setText(setDefaultDate());
         gbc.gridx = 0;
         gbc.gridy = 1;
