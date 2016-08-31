@@ -45,15 +45,16 @@ public class SSNGenListener implements ActionListener {
         char gender = '0';
         boolean isPermanent = true;
         Date convertedDate = null;
-        Border bdBorder = null;
+        Border bdBorder = date.getBorder();
                 
         String str = this.date.getText();
+
         DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
         try {
             convertedDate = format.parse(str);
         } catch (ParseException ex) {
-            logger.error(ex.toString());
+            logger.error(ex);
             date.setToolTipText("Date must be provided in dd.MM.yyyy format");
             bdBorder = BorderFactory.createLineBorder(Color.RED, 2);
             date.setBorder(bdBorder);
@@ -62,7 +63,6 @@ public class SSNGenListener implements ActionListener {
         
         // If input is correct, clean error indicators from Gui
         date.setToolTipText(null);
-        bdBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
         date.setBorder(bdBorder);
         
         if(genderF.isSelected()) {
@@ -80,7 +80,6 @@ public class SSNGenListener implements ActionListener {
         
         // Set validity icon as success if generated ssn is valid
         if(ssngen.isSSNValid(ssn)) {
-        	
             // Copy automagically to clipboard
             StringSelection stringSelection = new StringSelection(generatedSSN.getText());
             Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();

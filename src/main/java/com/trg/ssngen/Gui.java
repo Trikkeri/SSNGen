@@ -5,6 +5,9 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,6 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DateFormatter;
 import javax.swing.text.PlainDocument;
 
 public class Gui implements Runnable {
@@ -31,7 +35,7 @@ public class Gui implements Runnable {
         this.JFrame.setPreferredSize(new Dimension(360, 200));
         this.JFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        createComponents(this.JFrame.getContentPane());
+        createComponents(JFrame.getContentPane());
         
         this.JFrame.pack();
         this.JFrame.setVisible(true);
@@ -39,7 +43,7 @@ public class Gui implements Runnable {
 
     private void createComponents(Container container) {
     	JLabel jlblbirthDate;
-        JFormattedTextField jTtxtfieldDate;
+        JFormattedTextField jTxtfieldBdate;
         JLabel jlblGender;
         JRadioButton jRadiobtnGenderF;
         JRadioButton jRadiobtnGenderM;
@@ -50,8 +54,7 @@ public class Gui implements Runnable {
         JTextField jTxtfieldSSN;
         JLabel jlblValidtyIcon;
 
-        GridBagLayout gbl = new GridBagLayout();
-        container.setLayout(gbl);
+        container.setLayout(new GridBagLayout());
         GridBagConstraints gbc  = new GridBagConstraints();
         
         ButtonGroup ssnGenderBGroup = new ButtonGroup();
@@ -61,29 +64,31 @@ public class Gui implements Runnable {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        container.add(jlblbirthDate,gbc);
+        container.add(jlblbirthDate, gbc);
         
-        jTtxtfieldDate = new JFormattedTextField(new SimpleDateFormat("dd.MM.yyyy"));
-        int charLimit = 10;
-        jTtxtfieldDate.setPreferredSize(new Dimension(80,20));
-        
-        jTtxtfieldDate.setDocument(new PlainDocument() {
+        DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+        df.setLenient(false);
+        jTxtfieldBdate = new JFormattedTextField(df);
+ 
+        jTxtfieldBdate.setPreferredSize(new Dimension(80,20));
+        jTxtfieldBdate.setText(setDefaultDate());
+        // Limit input to 10 characters
+        jTxtfieldBdate.addKeyListener(new KeyAdapter() {
         	@Override
-        	public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
-            if(getLength() + str.length() <= charLimit)
-                super.insertString(offset, str, a);
+        	public void keyTyped(KeyEvent e) {
+        		if(jTxtfieldBdate.getText().length() >= 10) 
+        			e.consume();
         	}
         });
-
-        jTtxtfieldDate.setText(setDefaultDate());
+        
         gbc.gridx = 0;
         gbc.gridy = 1;
-        container.add(jTtxtfieldDate, gbc);  
+        container.add(jTxtfieldBdate, gbc);  
         
         jlblGender = new JLabel("Gender:");
         gbc.gridx = 1;
         gbc.gridy = 0;
-        container.add(jlblGender,gbc);
+        container.add(jlblGender, gbc);
                 
         jRadiobtnGenderF = new JRadioButton("Female");
         jRadiobtnGenderF.setSelected(true);
@@ -138,8 +143,7 @@ public class Gui implements Runnable {
         container.add(jlblValidtyIcon, gbc);
         
         // ActionListener for generate button
-        SSNGenListener ssgl = new SSNGenListener(jTtxtfieldDate, jRadiobtnGenderF, jRadiobtnPermSSN, jTxtfieldSSN, jlblValidtyIcon);
-        jbtnGenerateSSN.addActionListener(ssgl);
+        jbtnGenerateSSN.addActionListener(new SSNGenListener(jTxtfieldBdate, jRadiobtnGenderF, jRadiobtnPermSSN, jTxtfieldSSN, jlblValidtyIcon));
     }
     
     private String setDefaultDate() {
