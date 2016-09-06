@@ -22,7 +22,7 @@ import javax.swing.border.Border;
 import org.apache.logging.log4j.LogManager;
 
 public class SSNGenListener implements ActionListener {
-    private JFormattedTextField date;
+    private JTextField date;
     private JRadioButton genderF;
     private JRadioButton ssnPermanent;
     private JTextField generatedSSN;
@@ -31,7 +31,7 @@ public class SSNGenListener implements ActionListener {
     
     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(SSNGenListener.class);
     
-    public SSNGenListener(JFormattedTextField date, JRadioButton genderF, JRadioButton ssnPermanent, JTextField generatedSSN, JLabel jlblValidityIcon) {
+    public SSNGenListener(JTextField date, JRadioButton genderF, JRadioButton ssnPermanent, JTextField generatedSSN, JLabel jlblValidityIcon) {
         this.date = date;
         this.genderF = genderF;
         this.jlblValidityIcon = jlblValidityIcon;
@@ -48,7 +48,7 @@ public class SSNGenListener implements ActionListener {
         Border bdBorder = date.getBorder();
                 
         String str = this.date.getText();
-
+        
         DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
         try {
@@ -93,6 +93,12 @@ public class SSNGenListener implements ActionListener {
             jlblValidityIcon.setIcon(okIcon);
             jlblValidityIcon.setToolTipText("Generated SSN is invalid");
         }
+    }
+    
+    private boolean isDateValid(String str) {  	
+    	DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+    	
+    	return false;
     }
     
 }

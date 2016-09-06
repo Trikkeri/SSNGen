@@ -1,25 +1,34 @@
 package com.trg.ssngen;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.border.Border;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DateFormatter;
@@ -28,6 +37,7 @@ import javax.swing.text.PlainDocument;
 public class Gui implements Runnable {
 
     private JFrame JFrame;
+    private final String DATE_FORMAT = "dd.MM.yyyy";
 
     @Override
     public void run() {
@@ -43,7 +53,7 @@ public class Gui implements Runnable {
 
     private void createComponents(Container container) {
     	JLabel jlblbirthDate;
-        JFormattedTextField jTxtfieldBdate;
+        JTextField jTxtfieldBdate;
         JLabel jlblGender;
         JRadioButton jRadiobtnGenderF;
         JRadioButton jRadiobtnGenderM;
@@ -59,17 +69,17 @@ public class Gui implements Runnable {
         
         ButtonGroup ssnGenderBGroup = new ButtonGroup();
         ButtonGroup ssnModeBGroup = new ButtonGroup();
-                               
+
         jlblbirthDate = new JLabel("Birthdate:");
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridx = 0;
         gbc.gridy = 0;
         container.add(jlblbirthDate, gbc);
         
-        DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+        DateFormat df = new SimpleDateFormat(DATE_FORMAT);
         df.setLenient(false);
         jTxtfieldBdate = new JFormattedTextField(df);
- 
+        jTxtfieldBdate.setInputVerifier(new DateVerifier());
         jTxtfieldBdate.setPreferredSize(new Dimension(80,20));
         jTxtfieldBdate.setText(setDefaultDate());
         // Limit input to 10 characters
@@ -144,6 +154,32 @@ public class Gui implements Runnable {
         
         // ActionListener for generate button
         jbtnGenerateSSN.addActionListener(new SSNGenListener(jTxtfieldBdate, jRadiobtnGenderF, jRadiobtnPermSSN, jTxtfieldSSN, jlblValidtyIcon));
+        
+        // Add FocusLostListener to date field for date validation and save original border of birthdatetextfield for future use
+		Border originalBorder = jTxtfieldBdate.getBorder();
+        jTxtfieldBdate.addFocusListener(new FocusListener() {
+        	public void focusGained(FocusEvent e) {
+        	};
+        	public void focusLost(FocusEvent e) {
+        		String date = jTxtfieldBdate.getText();
+        		jTxtfieldBdate.setText(date);
+        		if(!e.isTemporary()) {
+        			date = jTxtfieldBdate.getText();
+        			if(!isDateValid(date)) {
+        				jTxtfieldBdate.setToolTipText("Date must be provided in dd.MM.yyyy format");
+        	            Border bdBorder = BorderFactory.createLineBorder(Color.RED, 2);
+        	            jTxtfieldBdate.setBorder(bdBorder);
+        	            jbtnGenerateSSN.setEnabled(false);
+        			} else {
+        				jbtnGenerateSSN.setEnabled(true);
+        				jTxtfieldBdate.setBorder(originalBorder);
+        				jTxtfieldBdate.setToolTipText(null);
+        			}
+        			
+        		}
+        	}
+        	
+        });
     }
     
     private String setDefaultDate() {
@@ -152,4 +188,38 @@ public class Gui implements Runnable {
     	Date calToDate = cal.getTime();
     	return new SimpleDateFormat("dd.MM.yyyy").format(calToDate);
     }
+    
+    private boolean isDateValid(String date) {
+    	try {
+    		DateFormat df = new SimpleDateFormat(DATE_FORMAT);
+    		df.setLenient(false);
+    		df.parse(date);
+    		return true;
+    	} catch (ParseException e) {
+    		return false;
+    	}
+    	
+    }
+}
+
+class DateVerifier extends InputVerifier {
+
+	@Override
+	public boolean verify(JComponent input) {
+		JTextField dateField = (JTextField) input;
+		String regex = "(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d";
+		Border bdBorder = dateField.getBorder();
+		
+		if(!dateField.getText().matches(regex)) {
+			dateField.setToolTipText("Date must be provided in dd.MM.yyyy format");
+            bdBorder = BorderFactory.createLineBorder(Color.RED, 2);
+            dateField.setBorder(bdBorder);
+            return true;
+		}
+		
+		dateField.setToolTipText(null);
+		dateField.setBorder(bdBorder);
+		return true;
+	}
+	
 }
