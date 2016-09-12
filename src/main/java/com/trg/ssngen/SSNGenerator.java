@@ -4,10 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
-import javax.swing.InputVerifier;
-import javax.swing.JComponent;
-import javax.swing.JTextField;
-
 import org.apache.logging.log4j.LogManager;
 
 public class SSNGenerator {  

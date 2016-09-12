@@ -1,6 +1,5 @@
 package com.trg.ssngen;
 
-import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -11,13 +10,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
 
 import org.apache.logging.log4j.LogManager;
 
@@ -44,26 +40,6 @@ public class SSNGenListener implements ActionListener {
     public void actionPerformed(ActionEvent ae) {
         char gender = '0';
         boolean isPermanent = true;
-        Date convertedDate = null;
-        Border bdBorder = date.getBorder();
-                
-        String str = this.date.getText();
-        
-        DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-
-        try {
-            convertedDate = format.parse(str);
-        } catch (ParseException ex) {
-            logger.error(ex);
-            date.setToolTipText("Date must be provided in dd.MM.yyyy format");
-            bdBorder = BorderFactory.createLineBorder(Color.RED, 2);
-            date.setBorder(bdBorder);
-            return;
-        }
-        
-        // If input is correct, clean error indicators from Gui
-        date.setToolTipText(null);
-        date.setBorder(bdBorder);
         
         if(genderF.isSelected()) {
            gender = 'F';
@@ -72,9 +48,9 @@ public class SSNGenListener implements ActionListener {
         }
         
         isPermanent = ssnPermanent.isSelected();
-        logger.debug("Parameters for generating ssn: Permanent SSN: " + isPermanent + ", Date: " + convertedDate + ", gender: " + gender);
+        logger.debug("Parameters for generating ssn: Permanent SSN: " + isPermanent + ", Date: " + date.getText() + ", gender: " + gender);
                
-    	String ssn = ssngen.generateSSN(isPermanent, convertedDate, gender);
+    	String ssn = ssngen.generateSSN(isPermanent, convertString2Date(date.getText()), gender);
 
         generatedSSN.setText(ssn);
         
@@ -94,11 +70,18 @@ public class SSNGenListener implements ActionListener {
             jlblValidityIcon.setToolTipText("Generated SSN is invalid");
         }
     }
-    
-    private boolean isDateValid(String str) {  	
-    	DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-    	
-    	return false;
+      
+    private Date convertString2Date(String date) {
+		Date convertedDate = null;
+		          		  
+		DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+		
+		try {
+		    convertedDate = format.parse(date);
+		} catch (ParseException ex) {
+		    logger.error(ex);
+		    return null;
+		}
+		return convertedDate;
     }
-    
 }

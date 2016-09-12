@@ -15,7 +15,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.InputVerifier;
@@ -26,19 +25,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DateFormatter;
-import javax.swing.text.PlainDocument;
 
 public class Gui implements Runnable {
 
     private JFrame JFrame;
     private final String DATE_FORMAT = "dd.MM.yyyy";
-
+    
     @Override
     public void run() {
         this.JFrame = new JFrame("SSN Generator");
@@ -166,7 +160,7 @@ public class Gui implements Runnable {
         		if(!e.isTemporary()) {
         			date = jTxtfieldBdate.getText();
         			if(!isDateValid(date)) {
-        				jTxtfieldBdate.setToolTipText("Date must be provided in dd.MM.yyyy format");
+        				jTxtfieldBdate.setToolTipText("Date must be within valid date between 1.1.1900 - 31.12.2099 and provided in dd.MM.yyyy format");
         	            Border bdBorder = BorderFactory.createLineBorder(Color.RED, 2);
         	            jTxtfieldBdate.setBorder(bdBorder);
         	            jbtnGenerateSSN.setEnabled(false);
@@ -193,13 +187,26 @@ public class Gui implements Runnable {
     	try {
     		DateFormat df = new SimpleDateFormat(DATE_FORMAT);
     		df.setLenient(false);
-    		df.parse(date);
-    		return true;
+    		Date d = df.parse(date);
+
+    		// Is date between 1900 and 2099
+            return isDateWithinRange(d);
+    		
     	} catch (ParseException e) {
     		return false;
     	}
     	
     }
+    
+    private boolean isDateWithinRange(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        if(cal.get(Calendar.YEAR) >= 1900 && cal.get(Calendar.YEAR) <= 2099) {
+        	return true;
+        }
+        return false;
+    }
+    
 }
 
 class DateVerifier extends InputVerifier {
@@ -211,7 +218,7 @@ class DateVerifier extends InputVerifier {
 		Border bdBorder = dateField.getBorder();
 		
 		if(!dateField.getText().matches(regex)) {
-			dateField.setToolTipText("Date must be provided in dd.MM.yyyy format");
+			dateField.setToolTipText("Date must be within valid date between 1.1.1900 - 31.12.2099 and provided in dd.MM.yyyy format");
             bdBorder = BorderFactory.createLineBorder(Color.RED, 2);
             dateField.setBorder(bdBorder);
             return true;
