@@ -7,7 +7,6 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 
 public class SSNGenerator {  
-    private char verificationmark;
     private static final org.apache.logging.log4j.Logger Logger = LogManager.getLogger(SSNGenListener.class);
     
     public String generateSSN(boolean isPermanent, Date date, char gender) throws NullPointerException {  
@@ -54,17 +53,38 @@ public class SSNGenerator {
     }
     
     public boolean isSSNValid(String ssn) {
+    	Logger.debug("Checking if generated " + ssn + " is valid");
         if(ssn.isEmpty() || ssn.length() < 11) {
             return false;
+        } 
+
+        // Return false if delimiter is not valid
+    	String delimiter = ssn.substring(6, 7);
+    	
+        if (!delimiter.equals("+") && !delimiter.equals("-") && !delimiter.equals("A")) {
+        	return false;
         }
         
         // Remove delimiter from ssn so that only 9 first digits remain
-        String modifiedSSN = removeDelimiter(ssn);
- 
+        String modifiedSSN = removeDelimiter(ssn);     
+        
+        // Save checkmark for validation
+        String checkmarkFromSSN = ssn.substring(10, 11);
+        
+        // Remove checkmark from ssn
         modifiedSSN = modifiedSSN.substring(0, 9);
-        boolean isValid = isValidSSN(modifiedSSN);
-        Logger.debug("Checking if generated ssn is valid: " + isValid);
-        return isValid;
+        
+        // Generate new checkmark based on partial ssn
+        char generatedCheckmark = calculateCheckmark(modifiedSSN);
+        
+        Logger.debug("Original checkmark: " + checkmarkFromSSN);
+        Logger.debug("Generated checkmark: " + generatedCheckmark);
+        
+        if(checkmarkFromSSN.charAt(0) == generatedCheckmark) {
+        	return true;
+        } else {
+        	return false;
+        }       
     }
 
     private String removeDelimiter(String ssn) {
@@ -79,12 +99,13 @@ public class SSNGenerator {
         return modifiedSSN;
     }
     
-    public String generateLastNumbersAndCheckmark(String partialSSN, boolean isPermanent, char gender) {
+    private String generateLastNumbersAndCheckmark(String partialSSN, boolean isPermanent, char gender) {
         Random rnd = new Random();
         boolean isValidRandomNumber = false;
         boolean isValidAgainstCheckmark = false;
         int lastDigits = 000;
         String zeroPadding = "";
+        char checkmark = (Character) null;
         
         Logger.debug("Starting to generate last numbers and checkmark for " + partialSSN + ". Using rules: isPermanent: " + isPermanent + ", gender: " + gender) ;
         
@@ -115,114 +136,85 @@ public class SSNGenerator {
             // Add leading zeroes if generated number is smaller than 100 or 10
             zeroPadding = String.format("%03d", lastDigits);
             
-            isValidAgainstCheckmark = isValidSSN(modifiedSSN + String.valueOf(zeroPadding));
+            checkmark = calculateCheckmark(modifiedSSN + String.valueOf(zeroPadding));
+            
+            isValidRandomNumber = isSSNValid(modifiedSSN + String.valueOf(zeroPadding) + String.valueOf(checkmark));
+            
             loopCalc++;
-            Logger.debug("isValidAgainstCheckmark has been set to " + isValidAgainstCheckmark + " after calculating verificationmark and verificationmark is " + this.verificationmark);
+            Logger.debug("isValidAgainstCheckmark has been set to " + isValidAgainstCheckmark + " after calculating verificationmark and verificationmark is " + String.valueOf(checkmark));
         }
 
-	    Logger.debug("SSN Generation done, returning value: " + modifiedSSN + zeroPadding);
-	    return zeroPadding + String.valueOf(verificationmark);
+	    Logger.debug("SSN Generation done, returning value: " + modifiedSSN + zeroPadding + lastDigits + String.valueOf(checkmark));
+	    return zeroPadding + String.valueOf(lastDigits) + String.valueOf(checkmark);
     }
     
-    private boolean isValidSSN(String ssn) {   
+    private char calculateCheckmark(String ssn) {   
         int remainder = calculateRemainder(ssn);
         switch(remainder) {
             case 0: 
-                verificationmark = '0';
-                return true;
+                return '0';
             case 1:
-                verificationmark = '1';
-                return true;
+            	return '1';
             case 2:
-                verificationmark = '2';
-                return true;
+            	return '2';
             case 3:
-                verificationmark = '3';
-                return true;
+            	return '3';
             case 4: 
-                verificationmark = '4';
-                return true;
+            	return '4';
             case 5: 
-                verificationmark = '5';
-                return true;
+            	return '5';
             case 6:
-                verificationmark = '6';
-                return true;
+            	return '6';
             case 7:
-                verificationmark = '7';
-                return true;
+            	return '7';
             case 8:
-                verificationmark = '8';
-                return true;
+                return '8';
             case 9:
-                verificationmark = '9';
-                return true;
+                return '9';
             case 10:
-                verificationmark = 'A';
-                return true;
+                return 'A';
             case 11:
-                verificationmark = 'B';
-                return true;
+                return 'B';
             case 12: 
-                verificationmark = 'C';
-                return true;
+                return 'C';
             case 13:
-                verificationmark = 'D';
-                return true;
+                return 'D';
             case 14:
-                verificationmark = 'E';
-                return true;
+                return 'E';
             case 15: 
-                verificationmark = 'F';
-                return true;
+                return 'F';
             case 16:
-                verificationmark = 'H';
-                return true;
+                return 'H';
             case 17:
-                verificationmark = 'J';
-                return true;
+                return 'J';
             case 18: 
-                verificationmark = 'K';
-                return true;
+                return 'K';
             case 19: 
-                verificationmark = 'L';
-                return true;
+                return 'L';
             case 20:
-                verificationmark = 'M';
-                return true;
+                return 'M';
             case 21:
-                verificationmark = 'N';
-                return true;
+                return 'N';
             case 22:
-                verificationmark = 'P';
-                return true;
+                return 'P';
             case 23:
-                verificationmark = 'R';
-                return true;
+                return 'R';
             case 24:
-                verificationmark = 'S';
-                return true;
+                return 'S';
             case 25:
-                verificationmark = 'T';
-                return true;
+                return 'T';
             case 26:
-                verificationmark = 'U';
-                return true;
+                return 'U';
             case 27:
-                verificationmark = 'V';
-                return true;
+                return 'V';
             case 28:
-                verificationmark = 'W';
-                return true;
+                return 'W';
             case 29:
-                verificationmark = 'X';
-                return true;
+                return 'X';
             case 30:
-                verificationmark = 'Y';
-                return true;
+                return 'Y';
         }
-        verificationmark = (Character) null;
-        return false;
+        return (Character) null;
     }
 
 	private int calculateRemainder(String ssn) {
