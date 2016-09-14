@@ -38,13 +38,13 @@ public class SSNGenListener implements ActionListener {
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        char gender = '0';
+        String gender = "";
         boolean isPermanent = true;
         
         if(genderF.isSelected()) {
-           gender = 'F';
+           gender = "F";
         } else {
-            gender = 'M';
+            gender = "M";
         }
         
         isPermanent = ssnPermanent.isSelected();
