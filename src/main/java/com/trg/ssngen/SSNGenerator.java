@@ -23,12 +23,12 @@ public class SSNGenerator {
             sb.append(cal.get(Calendar.DAY_OF_MONTH));
         }
         
-        if(cal.get(Calendar.MONTH) < 10 ) {
-            sb.append("0").append(cal.get(Calendar.MONTH));
+        if(cal.get(Calendar.MONTH) + 1 < 10 ) {
+            sb.append("0").append(cal.get(Calendar.MONTH) + 1);
         } else {
-            sb.append(cal.get(Calendar.MONTH));
+            sb.append(cal.get(Calendar.MONTH) + 1);
         }
-        
+
         // Grab two last digits from year
         String year = String.valueOf(cal.get(Calendar.YEAR));
         sb.append(year.charAt(2)).append(year.charAt(3));
@@ -55,10 +55,10 @@ public class SSNGenerator {
     public boolean isSSNValid(String ssn) {
     	Logger.debug("Checking if generated " + ssn + " is valid");
         if(ssn.isEmpty() || ssn.length() < 11) {
-        	Logger.debug("SSN is empty or shorter than 11 characters, SSN is invalid");
+        	Logger.error("SSN is empty or shorter than 11 characters, SSN is invalid");
             return false;
         } 
-
+        
         // Save delimiter for later use
     	String delimiter = ssn.substring(6, 7);
     	
