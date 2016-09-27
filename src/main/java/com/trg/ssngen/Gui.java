@@ -23,6 +23,7 @@ import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
@@ -36,16 +37,18 @@ public class Gui implements Runnable {
     @Override
     public void run() {
         this.JFrame = new JFrame("SSN Generator");
-        this.JFrame.setPreferredSize(new Dimension(360, 200));
+        this.JFrame.setPreferredSize(new Dimension(360, 250));
         this.JFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        createComponents(JFrame.getContentPane());
+        createSSNGenetatorPanel(JFrame.getContentPane());
+        createSSNValidationPanel(JFrame.getContentPane());
         
         this.JFrame.pack();
         this.JFrame.setVisible(true);
     }
 
-    private void createComponents(Container container) {
+	private void createSSNGenetatorPanel(Container container) {
+		JPanel ssnGenPanel = new JPanel(new GridBagLayout());
     	JLabel jlblbirthDate;
         JTextField jTxtfieldBdate;
         JLabel jlblGender;
@@ -56,8 +59,10 @@ public class Gui implements Runnable {
         JRadioButton jRadiobtnTempSSN;
         JButton jbtnGenerateSSN;
         JTextField jTxtfieldSSN;
-        JLabel jlblValidtyIcon;
-
+        JLabel jlblValidityIcon;
+        
+        ssnGenPanel.setBorder(BorderFactory.createTitledBorder(
+        		BorderFactory.createEtchedBorder(), "Generate new SSN"));
         container.setLayout(new GridBagLayout());
         GridBagConstraints gbc  = new GridBagConstraints();
         
@@ -68,7 +73,7 @@ public class Gui implements Runnable {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        container.add(jlblbirthDate, gbc);
+        ssnGenPanel.add(jlblbirthDate, gbc);
         
         DateFormat df = new SimpleDateFormat(DATE_FORMAT);
         df.setLenient(false);
@@ -87,67 +92,69 @@ public class Gui implements Runnable {
         
         gbc.gridx = 0;
         gbc.gridy = 1;
-        container.add(jTxtfieldBdate, gbc);  
+        ssnGenPanel.add(jTxtfieldBdate, gbc);
         
         jlblGender = new JLabel("Gender:");
         gbc.gridx = 1;
         gbc.gridy = 0;
-        container.add(jlblGender, gbc);
+        ssnGenPanel.add(jlblGender, gbc);
                 
         jRadiobtnGenderF = new JRadioButton("Female");
         jRadiobtnGenderF.setSelected(true);
         gbc.gridx = 1;
         gbc.gridy = 1;
         ssnGenderBGroup.add(jRadiobtnGenderF);
-        container.add(jRadiobtnGenderF, gbc);
+        ssnGenPanel.add(jRadiobtnGenderF, gbc);
                
         jRadiobtnGenderM = new JRadioButton("Male"); 
         gbc.gridx = 1;
         gbc.gridy = 2;
         ssnGenderBGroup.add(jRadiobtnGenderM);
-        container.add(jRadiobtnGenderM, gbc);
+        ssnGenPanel.add(jRadiobtnGenderM, gbc);
                 
         jlblSsnmode = new JLabel("SSN type:");
         gbc.gridx = 2;
         gbc.gridy = 0;
-        container.add(jlblSsnmode,gbc);
+        ssnGenPanel.add(jlblSsnmode, gbc);
         
         jRadiobtnPermSSN = new JRadioButton("Permanent SSN");
         jRadiobtnPermSSN.setSelected(true);
         gbc.gridx = 2;
         gbc.gridy = 1;
         ssnModeBGroup.add(jRadiobtnPermSSN);
-        container.add(jRadiobtnPermSSN, gbc);
+        ssnGenPanel.add(jRadiobtnPermSSN, gbc);
                
         jRadiobtnTempSSN = new JRadioButton("Temporary SSN");
         gbc.gridx = 2;
         gbc.gridy = 2;
         ssnModeBGroup.add(jRadiobtnTempSSN);
-        container.add(jRadiobtnTempSSN, gbc);
+        ssnGenPanel.add(jRadiobtnTempSSN, gbc);
         
         jbtnGenerateSSN = new JButton("Generate SSN");
         gbc.insets = new Insets(10,0,0,0);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.CENTER;    
-        container.add(jbtnGenerateSSN, gbc);
+        ssnGenPanel.add(jbtnGenerateSSN, gbc);
 
         jTxtfieldSSN = new JTextField();
         jTxtfieldSSN.setEditable(false);
         jTxtfieldSSN.setPreferredSize(new Dimension(90,20));
         gbc.gridx = 1;
         gbc.gridy = 4;
-        container.add(jTxtfieldSSN, gbc);
+        ssnGenPanel.add(jTxtfieldSSN, gbc);
 
-        jlblValidtyIcon = new JLabel();
-        jlblValidtyIcon.setPreferredSize(new Dimension(25,25));
+        jlblValidityIcon = new JLabel();
+        jlblValidityIcon.setPreferredSize(new Dimension(25,25));
         gbc.anchor = GridBagConstraints.WEST;  
         gbc.gridx = 2;
         gbc.gridy = 4;
-        container.add(jlblValidtyIcon, gbc);
+        ssnGenPanel.add(jlblValidityIcon, gbc);
         
+        container.add(ssnGenPanel);
+              
         // ActionListener for generate button
-        jbtnGenerateSSN.addActionListener(new SSNGenListener(jTxtfieldBdate, jRadiobtnGenderF, jRadiobtnPermSSN, jTxtfieldSSN, jlblValidtyIcon));
+        jbtnGenerateSSN.addActionListener(new SSNGenListener(jTxtfieldBdate, jRadiobtnGenderF, jRadiobtnPermSSN, jTxtfieldSSN, jlblValidityIcon));
         
         // Add FocusLostListener to date field for date validation and save original border of birthdatetextfield for future use
 		Border originalBorder = jTxtfieldBdate.getBorder();
@@ -175,6 +182,29 @@ public class Gui implements Runnable {
         	
         });
     }
+	
+    private void createSSNValidationPanel(Container container) {  
+    	JPanel jPanelSSNValidation = new JPanel(new GridBagLayout());
+        JTextField jTxtfieldSSNValidationField;
+        JLabel jlblValidtyIcon2;
+        GridBagConstraints gbc  = new GridBagConstraints();
+        
+        jTxtfieldSSNValidationField = new JTextField();
+        jTxtfieldSSNValidationField.setEditable(false);
+        jTxtfieldSSNValidationField.setPreferredSize(new Dimension(90,20));
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        jPanelSSNValidation.add(jTxtfieldSSNValidationField, gbc);
+
+        jlblValidtyIcon2 = new JLabel();
+        jlblValidtyIcon2.setPreferredSize(new Dimension(25,25));
+        gbc.anchor = GridBagConstraints.WEST;  
+        gbc.gridx = 2;
+        gbc.gridy = 6;
+        jPanelSSNValidation.add(jlblValidtyIcon2, gbc);
+        
+        container.add(jPanelSSNValidation, gbc);
+	}
     
     private String setDefaultDate() {
     	Calendar cal = Calendar.getInstance();
