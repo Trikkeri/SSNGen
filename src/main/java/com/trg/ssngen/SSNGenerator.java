@@ -7,7 +7,7 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 
 public class SSNGenerator {  
-    private static final org.apache.logging.log4j.Logger Logger = LogManager.getLogger(SSNGenListener.class);
+    private static final org.apache.logging.log4j.Logger Logger = LogManager.getLogger(GenerateSsnListener.class);
     
     public String generateSSN(boolean isPermanent, Date date, String gender) throws NullPointerException {  
         Logger.debug("Starting to generate SSN");
