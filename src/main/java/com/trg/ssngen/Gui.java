@@ -39,6 +39,7 @@ public class Gui implements Runnable {
     public void run() {
         this.JFrame = new JFrame("SSN Generator");
         this.JFrame.setPreferredSize(new Dimension(320, 280));
+        this.JFrame.setResizable(false);
         this.JFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         createSSNGenetatorPanel(JFrame.getContentPane());
@@ -191,10 +192,10 @@ public class Gui implements Runnable {
         JLabel ssnValidityIcon;
         JButton validateSsnButton;
         GridBagConstraints gbc  = new GridBagConstraints();
-        
         ssnValidationPanel.setBorder(BorderFactory.createTitledBorder(
         		BorderFactory.createEtchedBorder(), "Validate SSN"));
         container.setLayout(new GridBagLayout());
+        //ssnValidationPanel.setPreferredSize(new Dimension(400, 300));
         
         validateSsnField = new JTextField();
         validateSsnField.setEditable(true);
@@ -218,7 +219,8 @@ public class Gui implements Runnable {
         ssnValidationPanel.add(validateSsnButton, gbc);
         
         validateSsnButton.addActionListener(new GenerateSsnListener(validateSsnField, ssnValidityIcon, validateSsnButton));
-        
+
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         container.add(ssnValidationPanel, gbc);
 	}
     
