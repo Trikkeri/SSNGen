@@ -48,10 +48,12 @@ public class testSSNGenerator {
 		String ssn2 = ssngen.generateSSN(true, format.parse(bdateArray[1]), "F");
 		String ssn3 = ssngen.generateSSN(true, format.parse(bdateArray[2]), "F");
 		String ssn4 = ssngen.generateSSN(true, format.parse(bdateArray[3]), "F");
-		String ssn5 = ssngen.generateSSN(true, format.parse(bdateArray[3]), "F");
+		String ssn5 = ssngen.generateSSN(true, format.parse(bdateArray[4]), "F");
 		
 		assertEquals("010115A", ssn1.substring(0, 7));
-		
+		assertEquals("010115A", ssn2.substring(0, 7));
+		assertEquals("010115A", ssn3.substring(0, 7));
+		assertEquals("311299-", ssn4.substring(0, 7));
+		assertEquals("311299+", ssn5.substring(0, 7));
 	}
-
 }
