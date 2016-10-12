@@ -111,13 +111,13 @@ public class SSNGenerator {
         String checkmark = "";
         
         Logger.debug("Starting to generate last numbers and checkmark for " + partialSSN + ". Using rules: isPermanent: " + isPermanent + ", gender: " + gender) ;
-        
-        // Remove delimiter from ssn so that only 6 first digits remain
-        
+               
         // Save delimiter for later use
     	String delimiter = partialSSN.substring(6, 7);
 
         String modifiedSSN = removeDelimiter(partialSSN);
+        
+        // Variable for debugging purposes
         int loopCalc = 0;
         
         while(!isValidAgainstCheckmark) {

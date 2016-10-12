@@ -9,13 +9,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-
 import org.apache.logging.log4j.LogManager;
 
 public class GenerateSsnListener implements ActionListener {
@@ -24,28 +21,24 @@ public class GenerateSsnListener implements ActionListener {
     private JRadioButton generatePermanentSsn;
     private JTextField generatedSsnField;
     private SSNGenerator ssngen;
-  
+
     private JTextField validateSsnField;
     private JLabel ssnValidityIcon;
-    
-    private JButton ssnButton;
-    
+       
     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(GenerateSsnListener.class);
     
     public GenerateSsnListener(JTextField birthDateField, JRadioButton genderFRadio, JRadioButton generatePermanentSsn, 
-    		JTextField generatedSsnField, JLabel ssnValidityIcon, JButton generateSsnButton) {
+    		JTextField generatedSsnField, JLabel ssnValidityIcon) {
         this.birthDateField = birthDateField;
         this.genderFRadio = genderFRadio;
         this.ssnValidityIcon = ssnValidityIcon;
         this.generatePermanentSsn = generatePermanentSsn;
         this.generatedSsnField = generatedSsnField;
-        this.ssnButton = generateSsnButton;
     } 
     
-	public GenerateSsnListener(JTextField validateSsnField, JLabel ssnValidityIcon, JButton validateSsnButton) {
+	public GenerateSsnListener(JTextField validateSsnField, JLabel ssnValidityIcon) {
 		this.validateSsnField = validateSsnField;
 		this.ssnValidityIcon = ssnValidityIcon;
-		this.ssnButton = validateSsnButton;
 	}
     
     @Override
@@ -53,6 +46,7 @@ public class GenerateSsnListener implements ActionListener {
         
     	ssngen = new SSNGenerator();
     	
+    	// If event came from generateSSN button
     	if(ae.getActionCommand() == Actions.GENERATESSN.name()) {
         	String gender = "";
             boolean isPermanent = true;
@@ -83,8 +77,8 @@ public class GenerateSsnListener implements ActionListener {
             }
     	}
     	
+    	// If event came from validate SSN button
     	if (ae.getActionCommand() == Actions.VALIDATESSN.name()) {
-    		logger.debug(validateSsnField.getText());
     		if(ssngen.isSSNValid(validateSsnField.getText())) {
     			setValidityIconAsValid();
     		} else {
@@ -109,7 +103,6 @@ public class GenerateSsnListener implements ActionListener {
 		Date convertedDate = null;
 		          		  
 		DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-		
 		try {
 		    convertedDate = format.parse(date);
 		} catch (ParseException ex) {

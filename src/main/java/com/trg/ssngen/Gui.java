@@ -10,6 +10,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,12 +22,12 @@ import javax.swing.ButtonGroup;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import com.trg.ssngen.GenerateSsnListener;
@@ -37,6 +39,12 @@ public class Gui implements Runnable {
     
     @Override
     public void run() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    	
         this.JFrame = new JFrame("SSN Generator");
         this.JFrame.setPreferredSize(new Dimension(320, 280));
         this.JFrame.setResizable(false);
@@ -77,9 +85,7 @@ public class Gui implements Runnable {
         gbc.gridy = 0;
         ssnGenPanel.add(birthDateLabel, gbc);
         
-        DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-        df.setLenient(false);
-        birthDateField = new JFormattedTextField(df);
+        birthDateField = new JTextField();
         birthDateField.setInputVerifier(new DateVerifier());
         birthDateField.setPreferredSize(new Dimension(80,20));
         birthDateField.setText(setDefaultDate());
@@ -155,9 +161,9 @@ public class Gui implements Runnable {
         ssnGenPanel.add(ssnValidityIcon, gbc);
         
         container.add(ssnGenPanel);
-              
+                     
         // ActionListener for generate button
-        generateSsnButton.addActionListener(new GenerateSsnListener(birthDateField, genderFRadio, generatePermanentSsnRadio, generatedSsnField, ssnValidityIcon, generateSsnButton));
+        generateSsnButton.addActionListener(new GenerateSsnListener(birthDateField, genderFRadio, generatePermanentSsnRadio, generatedSsnField, ssnValidityIcon));
         
         // Add FocusLostListener to date field for date validation and save original border of birthDateField for future use
 		Border originalBorder = birthDateField.getBorder();
@@ -166,9 +172,7 @@ public class Gui implements Runnable {
         	};
         	public void focusLost(FocusEvent e) {
         		String date = birthDateField.getText();
-        		birthDateField.setText(date);
         		if(!e.isTemporary()) {
-        			date = birthDateField.getText();
         			if(!isDateValid(date)) {
         				birthDateField.setToolTipText("Date must be within valid date between 1.1.1900 - 31.12.2099 and provided in dd.MM.yyyy format");
         	            Border bdBorder = BorderFactory.createLineBorder(Color.RED, 2);
@@ -179,13 +183,39 @@ public class Gui implements Runnable {
         				birthDateField.setBorder(originalBorder);
         				birthDateField.setToolTipText(null);
         			}
-        			
         		}
+        		
         	}
+        });
+        
+        // Add two listeners for selecting all input in generatedSsnField if user interacts with the field
+        generatedSsnField.addFocusListener(new FocusListener() {
+
+			@Override public void focusGained(FocusEvent arg0) {}
+
+			@Override public void focusLost(FocusEvent e) {
+				generatedSsnField.selectAll();
+			}
         	
         });
+        
+        generatedSsnField.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				generatedSsnField.selectAll();
+			}
+
+			@Override public void mouseEntered(MouseEvent e) {}
+
+			@Override public void mouseExited(MouseEvent e) {}
+
+			@Override public void mousePressed(MouseEvent e) {}
+
+			@Override public void mouseReleased(MouseEvent e) {} 	
+        });
     }
-	
+		
     private void createSSNValidationPanel(Container container) {  
     	JPanel ssnValidationPanel = new JPanel(new GridBagLayout());
         JTextField validateSsnField;
@@ -194,31 +224,33 @@ public class Gui implements Runnable {
         GridBagConstraints gbc  = new GridBagConstraints();
         ssnValidationPanel.setBorder(BorderFactory.createTitledBorder(
         		BorderFactory.createEtchedBorder(), "Validate SSN"));
+        
         container.setLayout(new GridBagLayout());
-        //ssnValidationPanel.setPreferredSize(new Dimension(400, 300));
         
         validateSsnField = new JTextField();
         validateSsnField.setEditable(true);
         validateSsnField.setPreferredSize(new Dimension(90,20));
+        gbc.anchor = GridBagConstraints.EAST;
         gbc.gridx = 0;
         gbc.gridy = 1;
         ssnValidationPanel.add(validateSsnField, gbc);
 
         ssnValidityIcon = new JLabel();
         ssnValidityIcon.setPreferredSize(new Dimension(25,25));
-        gbc.anchor = GridBagConstraints.WEST;  
+        gbc.insets = new Insets(3,3,3,3);
+        gbc.anchor = GridBagConstraints.EAST;  
         gbc.gridx = 1;
         gbc.gridy = 1;
         ssnValidationPanel.add(ssnValidityIcon, gbc);
         
         validateSsnButton = new JButton("Validate SSN");
         validateSsnButton.setActionCommand(Actions.VALIDATESSN.name());
-        gbc.anchor = GridBagConstraints.CENTER;  
+        gbc.anchor = GridBagConstraints.EAST;  
         gbc.gridx = 0;
         gbc.gridy = 2;
         ssnValidationPanel.add(validateSsnButton, gbc);
         
-        validateSsnButton.addActionListener(new GenerateSsnListener(validateSsnField, ssnValidityIcon, validateSsnButton));
+        validateSsnButton.addActionListener(new GenerateSsnListener(validateSsnField, ssnValidityIcon));
 
         gbc.fill = GridBagConstraints.HORIZONTAL;
         container.add(ssnValidationPanel, gbc);
@@ -279,4 +311,4 @@ class DateVerifier extends InputVerifier {
 enum Actions {
     GENERATESSN,
     VALIDATESSN
-  }
+}
