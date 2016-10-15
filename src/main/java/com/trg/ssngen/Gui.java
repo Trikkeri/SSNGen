@@ -47,7 +47,7 @@ public class Gui implements Runnable {
     	
         this.JFrame = new JFrame("SSN Generator");
         this.JFrame.setPreferredSize(new Dimension(320, 280));
-        this.JFrame.setResizable(false);
+        //this.JFrame.setResizable(false);
         this.JFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         createSSNGenetatorPanel(JFrame.getContentPane());
@@ -71,6 +71,8 @@ public class Gui implements Runnable {
         JTextField generatedSsnField;
         JLabel ssnValidityIcon;
         
+		Border originalBorder;
+        
         ssnGenPanel.setBorder(BorderFactory.createTitledBorder(
         		BorderFactory.createEtchedBorder(), "Generate new SSN"));
         container.setLayout(new GridBagLayout());
@@ -86,21 +88,12 @@ public class Gui implements Runnable {
         ssnGenPanel.add(birthDateLabel, gbc);
         
         birthDateField = new JTextField();
-        birthDateField.setInputVerifier(new DateVerifier());
         birthDateField.setPreferredSize(new Dimension(80,20));
-        birthDateField.setText(setDefaultDate());
-        // Limit input to 10 characters
-        birthDateField.addKeyListener(new KeyAdapter() {
-        	@Override
-        	public void keyTyped(KeyEvent e) {
-        		if(birthDateField.getText().length() >= 10) 
-        			e.consume();
-        	}
-        });
-        
+        birthDateField.setText(setDefaultDate());     
         gbc.gridx = 0;
         gbc.gridy = 1;
         ssnGenPanel.add(birthDateField, gbc);
+        originalBorder = birthDateField.getBorder();
         
         genderLabel = new JLabel("Gender:");
         gbc.gridx = 1;
@@ -138,7 +131,7 @@ public class Gui implements Runnable {
         ssnModeBGroup.add(genenerateTemporarySsnRadi);
         ssnGenPanel.add(genenerateTemporarySsnRadi, gbc);
         
-        generateSsnButton = new JButton("Generate SSN");
+        generateSsnButton = new JButton("Generate");
         generateSsnButton.setActionCommand(Actions.GENERATESSN.name());
         gbc.insets = new Insets(10,0,0,0);
         gbc.gridx = 1;
@@ -154,6 +147,7 @@ public class Gui implements Runnable {
         ssnGenPanel.add(generatedSsnField, gbc);
 
         ssnValidityIcon = new JLabel();
+        gbc.insets = new Insets(3,3,3,3);
         ssnValidityIcon.setPreferredSize(new Dimension(25,25));
         gbc.anchor = GridBagConstraints.WEST;  
         gbc.gridx = 2;
@@ -161,34 +155,36 @@ public class Gui implements Runnable {
         ssnGenPanel.add(ssnValidityIcon, gbc);
         
         container.add(ssnGenPanel);
+        
+        // Limit birthDateField to 10 characters
+        birthDateField.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyTyped(KeyEvent e) {
+        		if(birthDateField.getText().length() >= 10) 
+        			e.consume();
+        	}
+        });
                      
         // ActionListener for generate button
         generateSsnButton.addActionListener(new GenerateSsnListener(birthDateField, genderFRadio, generatePermanentSsnRadio, generatedSsnField, ssnValidityIcon));
         
-        // Add FocusLostListener to date field for date validation and save original border of birthDateField for future use
-		Border originalBorder = birthDateField.getBorder();
-        birthDateField.addFocusListener(new FocusListener() {
-        	public void focusGained(FocusEvent e) {
-        	};
-        	public void focusLost(FocusEvent e) {
-        		String date = birthDateField.getText();
-        		if(!e.isTemporary()) {
-        			if(!isDateValid(date)) {
-        				birthDateField.setToolTipText("Date must be within valid date between 1.1.1900 - 31.12.2099 and provided in dd.MM.yyyy format");
-        	            Border bdBorder = BorderFactory.createLineBorder(Color.RED, 2);
-        	            birthDateField.setBorder(bdBorder);
-        	            generateSsnButton.setEnabled(false);
-        			} else {
-        				generateSsnButton.setEnabled(true);
-        				birthDateField.setBorder(originalBorder);
-        				birthDateField.setToolTipText(null);
-        			}
-        		}
+        // Listener for making sure that date is filled in certain format
+        birthDateField.setInputVerifier(new InputVerifier() {
+        	@Override
+        	public boolean verify(JComponent input) {
+        		JTextField dateField = (JTextField) input;
+        		String regex = "(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d";
         		
+        		if(!dateField.getText().matches(regex) || !isDateValid(dateField.getText())) {
+        			setGuiAsIsInvalidDatePresent(true, birthDateField, generateSsnButton, originalBorder);
+                    return false;
+        		}
+        		setGuiAsIsInvalidDatePresent(false, birthDateField, generateSsnButton, originalBorder);
+        		return true;
         	}
         });
-        
-        // Add two listeners for selecting all input in generatedSsnField if user interacts with the field
+               
+        // Two listeners for selecting all input in generatedSsnField if user interacts with the field
         generatedSsnField.addFocusListener(new FocusListener() {
 
 			@Override public void focusGained(FocusEvent arg0) {}
@@ -200,7 +196,6 @@ public class Gui implements Runnable {
         });
         
         generatedSsnField.addMouseListener(new MouseListener() {
-
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				generatedSsnField.selectAll();
@@ -213,7 +208,7 @@ public class Gui implements Runnable {
 			@Override public void mousePressed(MouseEvent e) {}
 
 			@Override public void mouseReleased(MouseEvent e) {} 	
-        });
+        });   
     }
 		
     private void createSSNValidationPanel(Container container) {  
@@ -230,6 +225,7 @@ public class Gui implements Runnable {
         validateSsnField = new JTextField();
         validateSsnField.setEditable(true);
         validateSsnField.setPreferredSize(new Dimension(90,20));
+        gbc.insets = new Insets(3,3,3,3);
         gbc.anchor = GridBagConstraints.EAST;
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -237,15 +233,15 @@ public class Gui implements Runnable {
 
         ssnValidityIcon = new JLabel();
         ssnValidityIcon.setPreferredSize(new Dimension(25,25));
-        gbc.insets = new Insets(3,3,3,3);
+
         gbc.anchor = GridBagConstraints.EAST;  
         gbc.gridx = 1;
         gbc.gridy = 1;
         ssnValidationPanel.add(ssnValidityIcon, gbc);
         
-        validateSsnButton = new JButton("Validate SSN");
+        validateSsnButton = new JButton("Validate");
         validateSsnButton.setActionCommand(Actions.VALIDATESSN.name());
-        gbc.anchor = GridBagConstraints.EAST;  
+        gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridx = 0;
         gbc.gridy = 2;
         ssnValidationPanel.add(validateSsnButton, gbc);
@@ -285,27 +281,20 @@ public class Gui implements Runnable {
         }
         return false;
     }
-}
-
-class DateVerifier extends InputVerifier {
-
-	@Override
-	public boolean verify(JComponent input) {
-		JTextField dateField = (JTextField) input;
-		String regex = "(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d";
-		Border bdBorder = dateField.getBorder();
+    
+    private void setGuiAsIsInvalidDatePresent(boolean isDateValid, JTextField birthDateField, JButton generateSsnButton, Border originalBorder) {
 		
-		if(!dateField.getText().matches(regex)) {
-			dateField.setToolTipText("Date must be within valid date between 1.1.1900 - 31.12.2099 and provided in dd.MM.yyyy format");
-            bdBorder = BorderFactory.createLineBorder(Color.RED, 2);
-            dateField.setBorder(bdBorder);
-            return true;
-		}
-		
-		dateField.setToolTipText(null);
-		dateField.setBorder(bdBorder);
-		return true;
-	}
+    	if(isDateValid) {
+			birthDateField.setToolTipText("Date must be within valid date between 01.01.1900 - 31.12.2099 and provided in dd.MM.yyyy format");
+            Border bdBorder = BorderFactory.createLineBorder(Color.RED, 2);
+            birthDateField.setBorder(bdBorder);
+            generateSsnButton.setEnabled(false);
+    	} else {
+			generateSsnButton.setEnabled(true);
+			birthDateField.setBorder(originalBorder);
+			birthDateField.setToolTipText(null);
+    	}
+    }
 }
 
 enum Actions {
