@@ -6,6 +6,9 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
@@ -47,7 +50,7 @@ public class Gui implements Runnable {
     	
         this.JFrame = new JFrame("SSN Generator");
         this.JFrame.setPreferredSize(new Dimension(320, 280));
-        //this.JFrame.setResizable(false);
+        this.JFrame.setResizable(false);
         this.JFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         createSSNGenetatorPanel(JFrame.getContentPane());
@@ -191,6 +194,9 @@ public class Gui implements Runnable {
 
 			@Override public void focusLost(FocusEvent e) {
 				generatedSsnField.selectAll();
+				if(!generatedSsnField.getText().isEmpty()) {
+					copyToClipboard(generatedSsnField.getText());
+				}
 			}
         	
         });
@@ -199,6 +205,9 @@ public class Gui implements Runnable {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				generatedSsnField.selectAll();
+				if(!generatedSsnField.getText().isEmpty()) {
+					copyToClipboard(generatedSsnField.getText());
+				}
 			}
 
 			@Override public void mouseEntered(MouseEvent e) {}
@@ -256,7 +265,7 @@ public class Gui implements Runnable {
     	Calendar cal = Calendar.getInstance();
     	cal.add(Calendar.YEAR, -18);
     	Date calToDate = cal.getTime();
-    	return new SimpleDateFormat("dd.MM.yyyy").format(calToDate);
+    	return new SimpleDateFormat(DATE_FORMAT).format(calToDate);
     }
     
     private boolean isDateValid(String date) {
@@ -294,6 +303,12 @@ public class Gui implements Runnable {
 			birthDateField.setBorder(originalBorder);
 			birthDateField.setToolTipText(null);
     	}
+    }
+    
+    private void copyToClipboard(String str) {
+        StringSelection stringSelection = new StringSelection(str);
+        Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clpbrd.setContents(stringSelection, null);
     }
 }
 
