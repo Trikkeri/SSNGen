@@ -6,9 +6,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
@@ -30,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
@@ -49,16 +49,22 @@ public class Gui implements Runnable {
         }
     	
         this.JFrame = new JFrame("SSN Generator");
-        this.JFrame.setPreferredSize(new Dimension(320, 280));
+        this.JFrame.setPreferredSize(new Dimension(325, 315));
         this.JFrame.setResizable(false);
         this.JFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         createSSNGenetatorPanel(JFrame.getContentPane());
         createSSNValidationPanel(JFrame.getContentPane());
+        createAboutPanel(JFrame.getContentPane());
         
         this.JFrame.pack();
         this.JFrame.setVisible(true);
     }
+
+	private void createAboutPanel(Container contentPane) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	private void createSSNGenetatorPanel(Container container) {
 		JPanel ssnGenPanel = new JPanel(new GridBagLayout());
@@ -73,14 +79,13 @@ public class Gui implements Runnable {
         JButton generateSsnButton;
         JTextField generatedSsnField;
         JLabel ssnValidityIcon;
-        
+        JLabel clipboardCopyStatus;
 		Border originalBorder;
         
         ssnGenPanel.setBorder(BorderFactory.createTitledBorder(
         		BorderFactory.createEtchedBorder(), "Generate new SSN"));
         container.setLayout(new GridBagLayout());
         GridBagConstraints gbc  = new GridBagConstraints();
-        
         ButtonGroup ssnGenderBGroup = new ButtonGroup();
         ButtonGroup ssnModeBGroup = new ButtonGroup();
 
@@ -157,7 +162,22 @@ public class Gui implements Runnable {
         gbc.gridy = 4;
         ssnGenPanel.add(ssnValidityIcon, gbc);
         
+        clipboardCopyStatus = new JLabel();
+        gbc.anchor = GridBagConstraints.CENTER;  
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        ssnGenPanel.add(clipboardCopyStatus, gbc);
+        clipboardCopyStatus.setPreferredSize(new Dimension(108, 26));
         container.add(ssnGenPanel);
+        
+        // Add timer for clearing label text after displaying a messsage
+        Timer labelTimer = new Timer(3000, new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				clipboardCopyStatus.setText("");
+			}
+        });
         
         // Limit birthDateField to 10 characters
         birthDateField.addKeyListener(new KeyAdapter() {
@@ -169,7 +189,7 @@ public class Gui implements Runnable {
         });
                      
         // ActionListener for generate button
-        generateSsnButton.addActionListener(new GenerateSsnListener(birthDateField, genderFRadio, generatePermanentSsnRadio, generatedSsnField, ssnValidityIcon));
+        generateSsnButton.addActionListener(new GenerateSsnListener(birthDateField, genderFRadio, generatePermanentSsnRadio, generatedSsnField, ssnValidityIcon, clipboardCopyStatus));
         
         // Listener for making sure that date is filled in certain format
         birthDateField.setInputVerifier(new InputVerifier() {
@@ -185,19 +205,21 @@ public class Gui implements Runnable {
         		setGuiAsIsInvalidDatePresent(false, birthDateField, generateSsnButton, originalBorder);
         		return true;
         	}
-        });
-               
+        });        
+ 
         // Two listeners for selecting all input in generatedSsnField if user interacts with the field
         generatedSsnField.addFocusListener(new FocusListener() {
 
-			@Override public void focusGained(FocusEvent arg0) {}
-
-			@Override public void focusLost(FocusEvent e) {
+			@Override 
+			public void focusGained(FocusEvent arg0) {
 				generatedSsnField.selectAll();
 				if(!generatedSsnField.getText().isEmpty()) {
-					copyToClipboard(generatedSsnField.getText());
-				}
-			}
+					copyToClipboard(generatedSsnField.getText(), clipboardCopyStatus);
+					labelTimer.start();
+			}}
+
+			@Override 
+			public void focusLost(FocusEvent e) {}
         	
         });
         
@@ -206,7 +228,8 @@ public class Gui implements Runnable {
 			public void mouseClicked(MouseEvent arg0) {
 				generatedSsnField.selectAll();
 				if(!generatedSsnField.getText().isEmpty()) {
-					copyToClipboard(generatedSsnField.getText());
+					copyToClipboard(generatedSsnField.getText(), clipboardCopyStatus);
+					labelTimer.start();
 				}
 			}
 
@@ -259,6 +282,7 @@ public class Gui implements Runnable {
 
         gbc.fill = GridBagConstraints.HORIZONTAL;
         container.add(ssnValidationPanel, gbc);
+        
 	}
     
     private String setDefaultDate() {
@@ -305,10 +329,16 @@ public class Gui implements Runnable {
     	}
     }
     
-    private void copyToClipboard(String str) {
-        StringSelection stringSelection = new StringSelection(str);
-        Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clpbrd.setContents(stringSelection, null);
+    public void copyToClipboard(String str, JLabel label) {
+		ClipboardCopy cbc = new ClipboardCopy();
+		label.setFont (label.getFont().deriveFont (10.0f));
+		if(cbc.copyToClipBoard(str)) {
+			label.setText("<html><center>SSN copied to clipboard</center></html>");
+			label.setForeground(new Color(0,100,0));
+		} else {
+			label.setText("<html><center>Copy to clipboard failed<br/>See log for more details</center></font><html>");
+			label.setForeground(new Color(178,34,34));
+		}
     }
 }
 

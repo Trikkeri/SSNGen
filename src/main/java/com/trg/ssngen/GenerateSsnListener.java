@@ -1,8 +1,5 @@
 package com.trg.ssngen;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
@@ -13,6 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+
 import org.apache.logging.log4j.LogManager;
 
 public class GenerateSsnListener implements ActionListener {
@@ -21,19 +19,21 @@ public class GenerateSsnListener implements ActionListener {
     private JRadioButton generatePermanentSsn;
     private JTextField generatedSsnField;
     private SSNGenerator ssngen;
-
+    private JLabel clipboardCopyStatus;
+    
     private JTextField validateSsnField;
     private JLabel ssnValidityIcon;
        
     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(GenerateSsnListener.class);
     
     public GenerateSsnListener(JTextField birthDateField, JRadioButton genderFRadio, JRadioButton generatePermanentSsn, 
-    		JTextField generatedSsnField, JLabel ssnValidityIcon) {
+    		JTextField generatedSsnField, JLabel ssnValidityIcon, JLabel clipboardCopyStatus) {
         this.birthDateField = birthDateField;
         this.genderFRadio = genderFRadio;
         this.ssnValidityIcon = ssnValidityIcon;
         this.generatePermanentSsn = generatePermanentSsn;
         this.generatedSsnField = generatedSsnField;
+        this.clipboardCopyStatus = clipboardCopyStatus;
     } 
     
 	public GenerateSsnListener(JTextField validateSsnField, JLabel ssnValidityIcon) {
@@ -67,11 +67,7 @@ public class GenerateSsnListener implements ActionListener {
             // Set validity icon as success if generated ssn is valid
             if(ssngen.isSSNValid(ssn)) {
                 // Copy automagically to clipboard
-                StringSelection stringSelection = new StringSelection(generatedSsnField.getText());
-                Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clpbrd.setContents(stringSelection, null);
-                generatedSsnField.setToolTipText("SSN has been automatically copied to clipboard");
-                setValidityIconAsValid();
+            	new Gui().copyToClipboard(ssn, clipboardCopyStatus);
             } else {
                 setValidityIconAsInvalid();
             }

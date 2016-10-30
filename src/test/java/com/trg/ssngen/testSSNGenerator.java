@@ -56,4 +56,8 @@ public class testSSNGenerator {
 		assertEquals("311299-", ssn4.substring(0, 7));
 		assertEquals("311299+", ssn5.substring(0, 7));
 	}
+	@Test
+	public void testCopyToClipboard() {
+		
+	}
 }
