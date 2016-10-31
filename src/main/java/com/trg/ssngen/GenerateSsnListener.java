@@ -68,6 +68,7 @@ public class GenerateSsnListener implements ActionListener {
             if(ssngen.isSSNValid(ssn)) {
                 // Copy automagically to clipboard
             	new Gui().copyToClipboard(ssn, clipboardCopyStatus);
+            	setValidityIconAsValid();
             } else {
                 setValidityIconAsInvalid();
             }
