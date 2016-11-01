@@ -189,7 +189,7 @@ public class Gui implements Runnable {
         });
                      
         // ActionListener for generate button
-        generateSsnButton.addActionListener(new GenerateSsnListener(birthDateField, genderFRadio, generatePermanentSsnRadio, generatedSsnField, ssnValidityIcon, clipboardCopyStatus));
+        generateSsnButton.addActionListener(new GenerateSsnListener(birthDateField, genderFRadio, generatePermanentSsnRadio, generatedSsnField, ssnValidityIcon, clipboardCopyStatus, labelTimer));
         
         // Listener for making sure that date is filled in certain format
         birthDateField.setInputVerifier(new InputVerifier() {
@@ -214,7 +214,7 @@ public class Gui implements Runnable {
 			public void focusGained(FocusEvent arg0) {
 				generatedSsnField.selectAll();
 				if(!generatedSsnField.getText().isEmpty()) {
-					copyToClipboard(generatedSsnField.getText(), clipboardCopyStatus);
+					copyToClipboard(generatedSsnField.getText(), clipboardCopyStatus, labelTimer);
 					labelTimer.start();
 			}}
 
@@ -228,7 +228,7 @@ public class Gui implements Runnable {
 			public void mouseClicked(MouseEvent arg0) {
 				generatedSsnField.selectAll();
 				if(!generatedSsnField.getText().isEmpty()) {
-					copyToClipboard(generatedSsnField.getText(), clipboardCopyStatus);
+					copyToClipboard(generatedSsnField.getText(), clipboardCopyStatus, labelTimer);
 					labelTimer.start();
 				}
 			}
@@ -329,7 +329,11 @@ public class Gui implements Runnable {
     	}
     }
     
-    public void copyToClipboard(String str, JLabel label) {
+    public void copyToClipboard(String str, JLabel label, Timer timer) {
+    	
+    	// Start timer for clearing label after x seconds
+    	timer.start();
+    	    	
 		ClipboardCopy cbc = new ClipboardCopy();
 		label.setFont (label.getFont().deriveFont (10.0f));
 		if(cbc.copyToClipBoard(str)) {

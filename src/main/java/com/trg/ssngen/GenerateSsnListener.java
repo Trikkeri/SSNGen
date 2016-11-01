@@ -10,6 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 import org.apache.logging.log4j.LogManager;
 
@@ -23,17 +24,19 @@ public class GenerateSsnListener implements ActionListener {
     
     private JTextField validateSsnField;
     private JLabel ssnValidityIcon;
-       
+    private Timer labelTimer;
+    
     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(GenerateSsnListener.class);
     
     public GenerateSsnListener(JTextField birthDateField, JRadioButton genderFRadio, JRadioButton generatePermanentSsn, 
-    		JTextField generatedSsnField, JLabel ssnValidityIcon, JLabel clipboardCopyStatus) {
+    		JTextField generatedSsnField, JLabel ssnValidityIcon, JLabel clipboardCopyStatus, Timer labelTimer) {
         this.birthDateField = birthDateField;
         this.genderFRadio = genderFRadio;
         this.ssnValidityIcon = ssnValidityIcon;
         this.generatePermanentSsn = generatePermanentSsn;
         this.generatedSsnField = generatedSsnField;
         this.clipboardCopyStatus = clipboardCopyStatus;
+        this.labelTimer = labelTimer;
     } 
     
 	public GenerateSsnListener(JTextField validateSsnField, JLabel ssnValidityIcon) {
@@ -67,7 +70,7 @@ public class GenerateSsnListener implements ActionListener {
             // Set validity icon as success if generated ssn is valid
             if(ssngen.isSSNValid(ssn)) {
                 // Copy automagically to clipboard
-            	new Gui().copyToClipboard(ssn, clipboardCopyStatus);
+            	new Gui().copyToClipboard(ssn, clipboardCopyStatus, labelTimer);
             	setValidityIconAsValid();
             } else {
                 setValidityIconAsInvalid();
