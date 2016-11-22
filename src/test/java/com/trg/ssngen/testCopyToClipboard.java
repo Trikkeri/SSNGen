@@ -13,7 +13,7 @@ import org.junit.Test;
 public class testCopyToClipboard {
 
 	@Test
-	public void testCopyToClipboard() throws UnsupportedFlavorException, IOException {
+	public void testCopyingToClipboard() throws UnsupportedFlavorException, IOException {
 		new ClipboardCopy().copyToClipBoard("Test string");
 		Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
 		String clpbrdContents = (String) clpbrd.getData(DataFlavor.stringFlavor);

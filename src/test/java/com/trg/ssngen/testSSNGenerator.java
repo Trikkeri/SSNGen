@@ -1,18 +1,10 @@
 package com.trg.ssngen;
 
 import static org.junit.Assert.*;
-
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import javax.swing.Timer;
 
 import org.junit.Test;
 
