@@ -183,8 +183,13 @@ public class Gui implements Runnable {
         birthDateField.addKeyListener(new KeyAdapter() {
         	@Override
         	public void keyTyped(KeyEvent e) {
-        		if(birthDateField.getText().length() >= 10) 
+        		// Allow replacing text with new one if text has been selected(painted) and text is at maximum length
+        		// If text has not been painted, consume new input thus keeping text lenght at 10 characters
+        		if(birthDateField.getSelectedText() != null && birthDateField.getSelectedText().length() == 10 && birthDateField.getText().length() >= 10) {
+        			return;
+        		} else if(birthDateField.getText().length() >= 10) {
         			e.consume();
+        		}  			
         	}
         });
                      
