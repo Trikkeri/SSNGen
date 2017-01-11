@@ -219,8 +219,7 @@ public class Gui implements Runnable {
 			public void focusGained(FocusEvent arg0) {
 				generatedSsnField.selectAll();
 				if(!generatedSsnField.getText().isEmpty()) {
-					copyToClipboard(generatedSsnField.getText(), clipboardCopyStatus, labelTimer);
-					labelTimer.start();
+					copyToClipboard(generatedSsnField.getText(), clipboardCopyStatus, labelTimer, birthDateField);
 			}}
 
 			@Override 
@@ -233,8 +232,7 @@ public class Gui implements Runnable {
 			public void mouseClicked(MouseEvent arg0) {
 				generatedSsnField.selectAll();
 				if(!generatedSsnField.getText().isEmpty()) {
-					copyToClipboard(generatedSsnField.getText(), clipboardCopyStatus, labelTimer);
-					labelTimer.start();
+					copyToClipboard(generatedSsnField.getText(), clipboardCopyStatus, labelTimer, birthDateField);
 				}
 			}
 
@@ -334,7 +332,7 @@ public class Gui implements Runnable {
     	}
     }
     
-    public void copyToClipboard(String str, JLabel label, Timer timer) {
+    public void copyToClipboard(String str, JLabel label, Timer timer, JTextField birthDate) {
     	
     	// Start timer for clearing label after x seconds
     	timer.start();
@@ -348,6 +346,8 @@ public class Gui implements Runnable {
 			label.setText("<html><center>Copy to clipboard failed<br/>See log for more details</center></font><html>");
 			label.setForeground(new Color(178,34,34));
 		}
+		// Clear focus immediately  from generatedSSN field to prevent accidental clipboard overwrites
+		birthDate.requestFocus();
     }
 }
 

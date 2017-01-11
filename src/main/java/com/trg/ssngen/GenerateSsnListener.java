@@ -70,7 +70,7 @@ public class GenerateSsnListener implements ActionListener {
             // Set validity icon as success if generated ssn is valid
             if(ssngen.isSSNValid(ssn)) {
                 // Copy automagically to clipboard
-            	new Gui().copyToClipboard(ssn, clipboardCopyStatus, labelTimer);
+            	new Gui().copyToClipboard(ssn, clipboardCopyStatus, labelTimer, birthDateField);
             	setValidityIconAsValid();
             } else {
                 setValidityIconAsInvalid();
