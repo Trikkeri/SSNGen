@@ -88,13 +88,28 @@ public class GenerateSsnListener implements ActionListener {
     }
 
 	private void setValidityIconAsInvalid() {
-		ImageIcon icon = new ImageIcon(Main.class.getResource("/failure.png"));
+		
+		ImageIcon icon;
+		
+		try {
+			icon = new ImageIcon(Main.class.getResource("/resources/failure.png"));
+		} catch(NullPointerException e) {
+			icon = new ImageIcon(Main.class.getResource("/failure.png"));
+		}	
 		ssnValidityIcon.setIcon(icon);
 		ssnValidityIcon.setToolTipText("SSN is invalid");
 	}
 
 	private void setValidityIconAsValid() {
-		ImageIcon icon = new ImageIcon(Main.class.getResource("/success.png"));
+		
+		ImageIcon icon;
+		
+		try {
+			icon = new ImageIcon(Main.class.getResource("/resources/success.png"));
+		} catch(NullPointerException e) {
+			icon = new ImageIcon(Main.class.getResource("/success.png"));
+		}	
+		
 		ssnValidityIcon.setIcon(icon);
 		ssnValidityIcon.setToolTipText("SSN is valid");
 	}
