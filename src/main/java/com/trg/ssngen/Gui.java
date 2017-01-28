@@ -55,16 +55,10 @@ public class Gui implements Runnable {
 
         createSSNGenetatorPanel(JFrame.getContentPane());
         createSSNValidationPanel(JFrame.getContentPane());
-        createAboutPanel(JFrame.getContentPane());
         
         this.JFrame.pack();
         this.JFrame.setVisible(true);
     }
-
-	private void createAboutPanel(Container contentPane) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	private void createSSNGenetatorPanel(Container container) {
 		JPanel ssnGenPanel = new JPanel(new GridBagLayout());
